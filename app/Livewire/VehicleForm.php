@@ -20,6 +20,12 @@ class VehicleForm extends Component
     public $manufactured_year;
     public $color;
     public $photo;
+    public $vehicle_license_front;
+    public $vehicle_license_back;
+    public $insurance_doc_front;
+    public $insurance_doc_back;
+    public $emission_test_doc_front;
+    public $emission_test_doc_back;
     public $license_expiry;
     public $insurance_expiry;
     public $emission_test_expiry;
@@ -36,6 +42,12 @@ class VehicleForm extends Component
             'manufactured_year' => 'required|integer|min:1900|max:' . (date('Y') + 1),
             'color' => 'nullable|string|max:255',
             'photo' => 'nullable|image|max:2048',
+            'vehicle_license_front' => 'nullable|image|max:2048',
+            'vehicle_license_back' => 'nullable|image|max:2048',
+            'insurance_doc_front' => 'nullable|image|max:2048',
+            'insurance_doc_back' => 'nullable|image|max:2048',
+            'emission_test_doc_front' => 'nullable|image|max:2048',
+            'emission_test_doc_back' => 'nullable|image|max:2048',
             'license_expiry' => 'nullable|date',
             'insurance_expiry' => 'nullable|date',
             'emission_test_expiry' => 'nullable|date',
@@ -79,8 +91,33 @@ class VehicleForm extends Component
             'notes' => $this->notes,
         ];
 
+        // Handle photo upload
         if ($this->photo) {
             $data['photo'] = $this->photo->store('vehicles', 'public');
+        }
+
+        // Handle vehicle license documents
+        if ($this->vehicle_license_front) {
+            $data['vehicle_license_front'] = $this->vehicle_license_front->store('documents/vehicle_licenses', 'public');
+        }
+        if ($this->vehicle_license_back) {
+            $data['vehicle_license_back'] = $this->vehicle_license_back->store('documents/vehicle_licenses', 'public');
+        }
+
+        // Handle insurance documents
+        if ($this->insurance_doc_front) {
+            $data['insurance_doc_front'] = $this->insurance_doc_front->store('documents/insurance', 'public');
+        }
+        if ($this->insurance_doc_back) {
+            $data['insurance_doc_back'] = $this->insurance_doc_back->store('documents/insurance', 'public');
+        }
+
+        // Handle emission test documents
+        if ($this->emission_test_doc_front) {
+            $data['emission_test_doc_front'] = $this->emission_test_doc_front->store('documents/emission_tests', 'public');
+        }
+        if ($this->emission_test_doc_back) {
+            $data['emission_test_doc_back'] = $this->emission_test_doc_back->store('documents/emission_tests', 'public');
         }
 
         if ($this->vehicle) {

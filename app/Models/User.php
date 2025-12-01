@@ -17,6 +17,8 @@ class User extends Authenticatable
         'phone',
         'driver_license_number',
         'driver_license_expiry',
+        'driver_license_front',
+        'driver_license_back',
         'profile_photo',
         'email_notifications',
     ];

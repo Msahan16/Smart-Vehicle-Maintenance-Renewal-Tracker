@@ -160,6 +160,7 @@
                     <a href="{{ route('maintenance.create') }}" class="btn btn-outline-primary">
                         <i class="fas fa-wrench me-2"></i>Log Maintenance
                     </a>
+                   
                 </div>
             </div>
         </div>

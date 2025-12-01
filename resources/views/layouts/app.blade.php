@@ -48,6 +48,29 @@
             padding: 20px 0;
             z-index: 1000;
             overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .menu-toggle {
+            display: flex;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .menu-toggle:hover {
+            opacity: 0.9;
         }
 
         .sidebar-brand {
@@ -111,6 +134,11 @@
         .main-content {
             margin-left: var(--sidebar-width);
             min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
         }
 
         /* Header */
@@ -279,8 +307,11 @@
 
         @media (max-width: 768px) {
             .sidebar {
-                width: 0;
-                padding: 0;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
             }
 
             .main-content {
@@ -349,7 +380,9 @@
         <!-- Header -->
         <header class="header">
             <div class="header-left">
-                <h4>@yield('page-title', 'Dashboard')</h4>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
             <div class="header-right">
                 <div class="notification-badge">
@@ -378,6 +411,12 @@
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('hidden');
+            document.querySelector('.main-content').classList.toggle('expanded');
+        });
+    </script>
     @livewireScripts
     @stack('scripts')
 </body>

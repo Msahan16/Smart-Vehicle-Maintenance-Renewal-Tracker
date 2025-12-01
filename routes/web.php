@@ -36,6 +36,8 @@ Route::middleware('auth')->group(function () {
     
     // Vehicle routes
     Route::resource('vehicles', VehicleController::class);
+    Route::get('/vehicles/{vehicle}/documents', [VehicleController::class, 'documents'])->name('vehicles.documents');
+    Route::patch('/vehicles/{vehicle}/documents', [VehicleController::class, 'updateDocuments'])->name('vehicles.documents.update');
     
     // Maintenance routes
     Route::resource('maintenance', MaintenanceController::class);

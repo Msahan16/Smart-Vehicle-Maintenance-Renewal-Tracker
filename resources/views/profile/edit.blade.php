@@ -17,7 +17,7 @@
                 <i class="fas fa-user me-2"></i>Profile Information
             </div>
             <div class="card-body">
-                <form method="POST" action="{{ route('profile.update') }}">
+                <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
                     @csrf
                     @method('PATCH')
                     
@@ -74,7 +74,67 @@
                                 @enderror
                             </div>
                         </div>
-                        
+
+                        <!-- Driver License Documents Section -->
+                        <div class="col-12 mb-4">
+                            <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                                <div class="card-body">
+                                    <h6 class="mb-3 text-white"><i class="fas fa-id-card me-2"></i>Driver License Documents</h6>
+                                    <div class="row">
+                                        <!-- Front Side -->
+                                        <div class="col-md-6 mb-3 mb-md-0">
+                                            <div class="bg-white p-3 rounded">
+                                                <p class="mb-2 fw-bold"><i class="fas fa-image me-1"></i>Front Side</p>
+                                                @if($user->driver_license_front)
+                                                    <div class="border rounded p-2 mb-2 text-center" style="background-color: #f8f9fa;">
+                                                        <img src="{{ asset('storage/' . $user->driver_license_front) }}" alt="Driver License Front" class="img-fluid" style="max-height: 180px; object-fit: contain;">
+                                                    </div>
+                                                    <a href="{{ asset('storage/' . $user->driver_license_front) }}" target="_blank" class="btn btn-sm btn-primary w-100 mb-2">
+                                                        <i class="fas fa-eye me-1"></i>View
+                                                    </a>
+                                                @else
+                                                    <div class="border rounded p-4 mb-2 text-center" style="background-color: #f8f9fa;">
+                                                        <i class="fas fa-user fa-4x text-muted mb-2"></i>
+                                                        <p class="text-muted mb-0 small">No file chosen</p>
+                                                    </div>
+                                                @endif
+                                                <input type="file" class="form-control @error('driver_license_front') is-invalid @enderror" id="driver_license_front" name="driver_license_front" accept="image/*" onchange="previewImage(event, 'driver_license_front_preview')">
+                                                @error('driver_license_front')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                                <div id="driver_license_front_preview" class="mt-2"></div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Back Side -->
+                                        <div class="col-md-6">
+                                            <div class="bg-white p-3 rounded">
+                                                <p class="mb-2 fw-bold"><i class="fas fa-image me-1"></i>Back Side</p>
+                                                @if($user->driver_license_back)
+                                                    <div class="border rounded p-2 mb-2 text-center" style="background-color: #f8f9fa;">
+                                                        <img src="{{ asset('storage/' . $user->driver_license_back) }}" alt="Driver License Back" class="img-fluid" style="max-height: 180px; object-fit: contain;">
+                                                    </div>
+                                                    <a href="{{ asset('storage/' . $user->driver_license_back) }}" target="_blank" class="btn btn-sm btn-primary w-100 mb-2">
+                                                        <i class="fas fa-eye me-1"></i>View
+                                                    </a>
+                                                @else
+                                                    <div class="border rounded p-4 mb-2 text-center" style="background-color: #f8f9fa;">
+                                                        <i class="fas fa-user fa-4x text-muted mb-2"></i>
+                                                        <p class="text-muted mb-0 small">No file chosen</p>
+                                                    </div>
+                                                @endif
+                                                <input type="file" class="form-control @error('driver_license_back') is-invalid @enderror" id="driver_license_back" name="driver_license_back" accept="image/*" onchange="previewImage(event, 'driver_license_back_preview')">
+                                                @error('driver_license_back')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                                <div id="driver_license_back_preview" class="mt-2"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-12">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-2"></i>Update Profile
@@ -123,4 +183,26 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+function previewImage(event, previewId) {
+    const input = event.target;
+    const preview = document.getElementById(previewId);
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            preview.innerHTML = `
+                <p class="mb-1 small text-muted">New document preview:</p>
+                <img src="${e.target.result}" alt="Preview" class="img-thumbnail" style="max-height: 150px;">
+            `;
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+@endpush
 @endsection

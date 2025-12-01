@@ -26,8 +26,20 @@ class ProfileController extends Controller
             'phone' => 'nullable|string|max:255',
             'driver_license_number' => 'nullable|string|max:255',
             'driver_license_expiry' => 'nullable|date',
+            'driver_license_front' => 'nullable|image|max:2048',
+            'driver_license_back' => 'nullable|image|max:2048',
             'email_notifications' => 'boolean',
         ]);
+
+        // Handle driver license front image
+        if ($request->hasFile('driver_license_front')) {
+            $validated['driver_license_front'] = $request->file('driver_license_front')->store('documents/driver_licenses', 'public');
+        }
+
+        // Handle driver license back image
+        if ($request->hasFile('driver_license_back')) {
+            $validated['driver_license_back'] = $request->file('driver_license_back')->store('documents/driver_licenses', 'public');
+        }
 
         $user->update($validated);
 
