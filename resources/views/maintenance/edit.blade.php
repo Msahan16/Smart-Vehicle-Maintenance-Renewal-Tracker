@@ -10,7 +10,7 @@
                 <i class="fas fa-wrench me-2"></i>Edit Maintenance Record
             </div>
             <div class="card-body">
-                <form action="{{ route('maintenance.update', $maintenance) }}" method="POST">
+                <form action="{{ route('maintenance.update', $maintenance) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PATCH')
                     
@@ -61,7 +61,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="next_service_date" class="form-label">Next Service Date</label>
-                            <input type="date" name="next_service_date" id="next_service_date" class="form-control @error('next_service_date') is-invalid @enderror" value="{{ old('next_service_date', $maintenance->next_service_date?->format('Y-m-d')) }}">
+                            <input type="date" name="next_service_date" id="next_service_date" class="form-control @error('next_service_date') is-invalid @enderror" value="{{ old('next_service_date', $maintenance->next_due_date?->format('Y-m-d')) }}">
                             @error('next_service_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -97,6 +97,44 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="service_bill" class="form-label">Service Bill</label>
+                            @if($maintenance->service_bill)
+                                <div class="mb-2">
+                                    <img src="{{ Storage::url($maintenance->service_bill) }}" class="img-thumbnail" style="max-width: 200px; max-height: 150px;" alt="Service Bill">
+                                    <button type="button" class="btn btn-sm btn-info ms-2" data-bs-toggle="modal" data-bs-target="#serviceBillModal">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            @endif
+                            <input type="file" name="service_bill" id="service_bill" class="form-control @error('service_bill') is-invalid @enderror" accept="image/*" onchange="previewImage(this, 'serviceBillPreview')">
+                            <small class="text-muted">Upload new service bill to replace existing (JPG, PNG, max 2MB)</small>
+                            @error('service_bill')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <div id="serviceBillPreview" class="mt-2"></div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="related_document" class="form-label">Related Document</label>
+                            @if($maintenance->related_document)
+                                <div class="mb-2">
+                                    <img src="{{ Storage::url($maintenance->related_document) }}" class="img-thumbnail" style="max-width: 200px; max-height: 150px;" alt="Related Document">
+                                    <button type="button" class="btn btn-sm btn-info ms-2" data-bs-toggle="modal" data-bs-target="#relatedDocModal">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            @endif
+                            <input type="file" name="related_document" id="related_document" class="form-control @error('related_document') is-invalid @enderror" accept="image/*" onchange="previewImage(this, 'relatedDocPreview')">
+                            <small class="text-muted">Upload new document to replace existing (JPG, PNG, max 2MB)</small>
+                            @error('related_document')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <div id="relatedDocPreview" class="mt-2"></div>
+                        </div>
+                    </div>
+
                     <div class="mb-3">
                         <label for="notes" class="form-label">Notes</label>
                         <textarea name="notes" id="notes" class="form-control @error('notes') is-invalid @enderror" rows="3" placeholder="Additional details about the service...">{{ old('notes', $maintenance->notes) }}</textarea>
@@ -118,4 +156,53 @@
         </div>
     </div>
 </div>
+
+<!-- Service Bill Modal -->
+@if($maintenance->service_bill)
+<div class="modal fade" id="serviceBillModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Service Bill</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="{{ Storage::url($maintenance->service_bill) }}" class="img-fluid" alt="Service Bill">
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+<!-- Related Document Modal -->
+@if($maintenance->related_document)
+<div class="modal fade" id="relatedDocModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Related Document</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="{{ Storage::url($maintenance->related_document) }}" class="img-fluid" alt="Related Document">
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+<script>
+function previewImage(input, previewId) {
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = '';
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `<img src="${e.target.result}" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">`;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 @endsection

@@ -33,7 +33,8 @@
                         <th>Service Type</th>
                         <th>Service Center</th>
                         <th>Cost</th>
-                        <th>Next Due</th>
+                        <th>Next Service Date</th>
+                        <th>Documents</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -49,11 +50,28 @@
                             <td>{{ $record->service_center ?? '-' }}</td>
                             <td>{{ $record->cost ? '$' . number_format($record->cost, 2) : '-' }}</td>
                             <td>
-                                @if($record->next_service_date)
-                                    {{ $record->next_service_date->format('M d, Y') }}
+                                @if($record->next_due_date)
+                                    {{ $record->next_due_date->format('M d, Y') }}
                                 @else
                                     <span class="text-muted">-</span>
                                 @endif
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    @if($record->service_bill)
+                                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#serviceBillModal{{ $record->id }}" title="Service Bill">
+                                            <i class="fas fa-file-invoice"></i>
+                                        </button>
+                                    @endif
+                                    @if($record->related_document)
+                                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#relatedDocModal{{ $record->id }}" title="Related Document">
+                                            <i class="fas fa-file-alt"></i>
+                                        </button>
+                                    @endif
+                                    @if(!$record->service_bill && !$record->related_document)
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </div>
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
@@ -72,7 +90,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center py-5">
+                            <td colspan="8" class="text-center py-5">
                                 <i class="fas fa-wrench fa-3x text-muted mb-3"></i>
                                 <p class="text-muted">No maintenance records yet</p>
                                 <a href="{{ route('maintenance.create') }}" class="btn btn-primary">
@@ -92,4 +110,39 @@
         @endif
     </div>
 </div>
+
+<!-- Document Modals -->
+@foreach($maintenanceRecords as $record)
+    @if($record->service_bill)
+    <div class="modal fade" id="serviceBillModal{{ $record->id }}" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Service Bill - {{ $record->vehicle->vehicle_number }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="{{ Storage::url($record->service_bill) }}" class="img-fluid" alt="Service Bill">
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    @if($record->related_document)
+    <div class="modal fade" id="relatedDocModal{{ $record->id }}" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Related Document - {{ $record->vehicle->vehicle_number }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="{{ Storage::url($record->related_document) }}" class="img-fluid" alt="Related Document">
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+@endforeach
 @endsection

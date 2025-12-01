@@ -19,6 +19,8 @@ class MaintenanceRecord extends Model
         'cost',
         'notes',
         'invoice_image',
+        'service_bill',
+        'related_document',
     ];
 
     protected function casts(): array

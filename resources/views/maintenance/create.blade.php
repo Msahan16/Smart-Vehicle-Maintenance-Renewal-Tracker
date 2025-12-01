@@ -17,7 +17,7 @@
                         <a href="{{ route('vehicles.create') }}" class="alert-link">Add Vehicle</a>
                     </div>
                 @else
-                    <form action="{{ route('maintenance.store') }}" method="POST">
+                    <form action="{{ route('maintenance.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         
                         <div class="mb-3">
@@ -103,6 +103,28 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="service_bill" class="form-label">Service Bill</label>
+                                <input type="file" name="service_bill" id="service_bill" class="form-control @error('service_bill') is-invalid @enderror" accept="image/*" onchange="previewImage(this, 'serviceBillPreview')">
+                                <small class="text-muted">Upload service bill image (JPG, PNG, max 2MB)</small>
+                                @error('service_bill')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div id="serviceBillPreview" class="mt-2"></div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="related_document" class="form-label">Related Document</label>
+                                <input type="file" name="related_document" id="related_document" class="form-control @error('related_document') is-invalid @enderror" accept="image/*" onchange="previewImage(this, 'relatedDocPreview')">
+                                <small class="text-muted">Upload related document (JPG, PNG, max 2MB)</small>
+                                @error('related_document')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div id="relatedDocPreview" class="mt-2"></div>
+                            </div>
+                        </div>
+
                         <div class="mb-3">
                             <label for="notes" class="form-label">Notes</label>
                             <textarea name="notes" id="notes" class="form-control @error('notes') is-invalid @enderror" rows="3" placeholder="Additional details about the service...">{{ old('notes') }}</textarea>
@@ -125,4 +147,19 @@
         </div>
     </div>
 </div>
+
+<script>
+function previewImage(input, previewId) {
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = '';
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `<img src="${e.target.result}" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">`;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 @endsection
