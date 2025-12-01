@@ -24,24 +24,33 @@ class DashboardController extends Controller
             if ($vehicle->license_expiry) {
                 $upcomingRenewals->push((object)[
                     'vehicle' => $vehicle,
-                    'type' => 'license',
+                    'type' => 'Vehicle License',
                     'due_date' => $vehicle->license_expiry,
                 ]);
             }
             if ($vehicle->insurance_expiry) {
                 $upcomingRenewals->push((object)[
                     'vehicle' => $vehicle,
-                    'type' => 'insurance',
+                    'type' => 'Insurance',
                     'due_date' => $vehicle->insurance_expiry,
                 ]);
             }
             if ($vehicle->emission_test_expiry) {
                 $upcomingRenewals->push((object)[
                     'vehicle' => $vehicle,
-                    'type' => 'emission',
+                    'type' => 'Emission Test',
                     'due_date' => $vehicle->emission_test_expiry,
                 ]);
             }
+        }
+        
+        // Add driver license expiry
+        if ($user->driver_license_expiry) {
+            $upcomingRenewals->push((object)[
+                'vehicle' => null,
+                'type' => 'Driver License',
+                'due_date' => $user->driver_license_expiry,
+            ]);
         }
         
         // Sort by due date

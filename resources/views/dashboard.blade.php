@@ -73,12 +73,17 @@
                                 @foreach($upcomingRenewals as $renewal)
                                     <tr>
                                         <td>
-                                            <strong>{{ $renewal->vehicle->brand }} {{ $renewal->vehicle->model }}</strong><br>
-                                            <small class="text-muted">{{ $renewal->vehicle->vehicle_number }}</small>
+                                            @if($renewal->vehicle)
+                                                <strong>{{ $renewal->vehicle->brand }} {{ $renewal->vehicle->model }}</strong><br>
+                                                <small class="text-muted">{{ $renewal->vehicle->vehicle_number }}</small>
+                                            @else
+                                                <strong>{{ auth()->user()->name }}</strong><br>
+                                                <small class="text-muted">{{ auth()->user()->driver_license_number ?? 'Driver License' }}</small>
+                                            @endif
                                         </td>
                                         <td>
-                                            <i class="fas fa-{{ $renewal->type == 'insurance' ? 'shield-alt' : ($renewal->type == 'license' ? 'id-card' : 'cloud') }} me-1"></i>
-                                            {{ ucfirst($renewal->type) }}
+                                            <i class="fas fa-{{ $renewal->type == 'Insurance' ? 'shield-alt' : ($renewal->type == 'Vehicle License' ? 'id-card' : ($renewal->type == 'Driver License' ? 'id-badge' : 'cloud')) }} me-1"></i>
+                                            {{ $renewal->type }}
                                         </td>
                                         <td>{{ $renewal->due_date->format('M d, Y') }}</td>
                                         <td>
