@@ -308,6 +308,7 @@
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
+                width: 280px;
             }
 
             .sidebar.show {
@@ -317,14 +318,142 @@
             .main-content {
                 margin-left: 0;
             }
+
+            .header {
+                padding: 0 15px;
+            }
+
+            .content-area {
+                padding: 15px;
+            }
+
+            .stat-card {
+                margin-bottom: 15px;
+            }
+
+            .stat-card h3 {
+                font-size: 24px;
+            }
+
+            .stat-card .icon {
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+            }
+
+            .user-menu > div:last-child {
+                display: none;
+            }
+
+            .header-right {
+                gap: 10px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .card-custom .card-header,
+            .card-custom .card-body {
+                padding: 15px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            h4 {
+                font-size: 18px;
+            }
+
+            .btn-group {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .btn-group .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar-brand h3 {
+                font-size: 18px;
+            }
+
+            .sidebar-menu li a {
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-card h3 {
+                font-size: 20px;
+            }
+
+            .stat-card p {
+                font-size: 13px;
+            }
+
+            .notification-badge {
+                display: none;
+            }
+
+            .menu-toggle {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+
+            .theme-toggle {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+
+            .user-avatar {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+            }
+        }
+
+        /* Mobile sidebar overlay */
+        @media (max-width: 768px) {
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+            }
+
+            .sidebar-overlay.show {
+                display: block;
+            }
+
+            .sidebar {
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+            }
         }
     </style>
     @livewireStyles
     @stack('styles')
 </head>
 <body>
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
             <div class="icon">
                 <i class="fas fa-car"></i>
@@ -412,9 +541,46 @@
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            document.querySelector('.sidebar').classList.toggle('hidden');
-            document.querySelector('.main-content').classList.toggle('expanded');
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const mainContent = document.querySelector('.main-content');
+
+        function toggleSidebar() {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('show');
+                sidebarOverlay.classList.toggle('show');
+            } else {
+                sidebar.classList.toggle('hidden');
+                mainContent.classList.toggle('expanded');
+            }
+        }
+
+        menuToggle.addEventListener('click', toggleSidebar);
+
+        // Close sidebar when clicking overlay on mobile
+        sidebarOverlay.addEventListener('click', function() {
+            sidebar.classList.remove('show');
+            sidebarOverlay.classList.remove('show');
+        });
+
+        // Close sidebar when clicking a link on mobile
+        const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('show');
+                    sidebarOverlay.classList.remove('show');
+                }
+            });
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('show');
+                sidebarOverlay.classList.remove('show');
+            }
         });
     </script>
     @livewireScripts
