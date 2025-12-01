@@ -23,7 +23,7 @@ class RenewalController extends Controller
                 $daysLeft = Carbon::parse($vehicle->license_expiry)->diffInDays(Carbon::today(), false);
                 $renewals->push([
                     'vehicle' => $vehicle,
-                    'type' => 'License Plate',
+                    'type' => 'Vehicle License',
                     'expiry_date' => $vehicle->license_expiry,
                     'days_left' => -$daysLeft,
                     'status' => $this->getStatus(-$daysLeft),

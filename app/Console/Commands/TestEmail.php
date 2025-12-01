@@ -22,7 +22,7 @@ class TestEmail extends Command
         
         $reminders = [
             [
-                'type' => 'License Plate',
+                'type' => 'Vehicle License',
                 'vehicle' => 'Toyota Camry',
                 'vehicle_number' => 'ABC-1234',
                 'brand' => 'Toyota',

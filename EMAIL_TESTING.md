@@ -136,7 +136,7 @@ The renewal reminder email includes:
 - **Beautiful gradient header** (purple/blue)
 - **User's name** personalization
 - **Each renewal** with:
-  - Type (License Plate, Insurance, Emission Test, Driver License)
+  - Type (Vehicle License, Insurance, Emission Test, Driver License)
   - Vehicle details
   - Due date
   - Days remaining
