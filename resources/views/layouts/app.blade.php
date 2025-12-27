@@ -48,11 +48,47 @@
             padding: 20px 0;
             z-index: 1000;
             overflow-y: auto;
-            transition: transform 0.3s ease;
+            transition: all 0.25s ease;
         }
 
-        .sidebar.hidden {
-            transform: translateX(-100%);
+        /* Collapsed (icon-only) sidebar */
+        .sidebar.collapsed {
+            width: 72px;
+            padding: 10px 6px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%); /* same purple gradient as expanded */
+            border-right: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .sidebar.collapsed .sidebar-brand h3,
+        .sidebar.collapsed .sidebar-brand .brand-text,
+        .sidebar.collapsed .sidebar-menu li a .label {
+            display: none;
+        }
+
+        /* Brand icon adjustments when collapsed (white circular avatar) */
+        .sidebar.collapsed .sidebar-brand {
+            padding: 12px 6px 20px;
+            text-align: center;
+            border-bottom: none;
+        }
+
+        .sidebar.collapsed .sidebar-brand .icon {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+        }
+
+        .sidebar.collapsed .sidebar-brand .icon i {
+            font-size: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .menu-toggle {
@@ -105,18 +141,28 @@
             -webkit-text-fill-color: transparent;
         }
 
+
         .sidebar-menu {
             list-style: none;
             padding: 0;
         }
 
         .sidebar-menu li a {
-            display: block;
-            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 18px;
             color: white;
             text-decoration: none;
-            transition: all 0.3s;
+            transition: all 0.2s;
             border-left: 3px solid transparent;
+            border-radius: 8px;
+            margin: 6px 8px;
+        }
+
+        .sidebar-menu li a .label {
+            display: inline-block;
+            white-space: nowrap;
         }
 
         .sidebar-menu li a:hover,
@@ -126,8 +172,52 @@
         }
 
         .sidebar-menu li a i {
-            width: 25px;
-            margin-right: 10px;
+            width: 28px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .icon-indicator {
+            display: none;
+        }
+
+        /* collapsed look: center icons vertically and make active item green */
+        .sidebar.collapsed .sidebar-menu li a {
+            justify-content: center;
+            padding: 10px 6px;
+            margin: 6px 4px;
+            background: transparent;
+            border-left: none;
+            color: #e6eef8;
+        }
+
+        .sidebar.collapsed .sidebar-menu li a i {
+            color: #e6eef8;
+            font-size: 18px;
+        }
+
+        .sidebar.collapsed .sidebar-menu li a:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .sidebar.collapsed .sidebar-menu li a.active {
+            background: transparent;
+        }
+
+        .sidebar .sidebar-menu li a.active,
+        .sidebar .sidebar-menu li a:hover {
+            background: rgba(255,255,255,0.06);
+            border-left-color: rgba(255,255,255,0.08);
+        }
+
+        .sidebar .sidebar-menu li a.active .icon-indicator,
+        .sidebar.collapsed .sidebar-menu li a.active .icon-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 36px;
+            background: #10b981; /* green */
+            border-radius: 6px;
+            margin-right: 8px;
         }
 
         /* Main Content */
@@ -139,6 +229,11 @@
 
         .main-content.expanded {
             margin-left: 0;
+        }
+
+        /* When sidebar is collapsed, reduce main content left margin */
+        .main-content.collapsed {
+            margin-left: 72px;
         }
 
         /* Header */
@@ -458,46 +553,52 @@
             <div class="icon">
                 <i class="fas fa-car"></i>
             </div>
-            <h3>Vehicle Tracker</h3>
+            <h3><span class="brand-text">Vehicle Tracker</span></h3>
         </div>
 
         <ul class="sidebar-menu">
             <li>
                 <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                    <span class="icon-indicator"></span>
                     <i class="fas fa-home"></i>
-                    Dashboard
+                    <span class="label">Dashboard</span>
                 </a>
             </li>
             <li>
                 <a href="{{ route('vehicles.index') }}" class="{{ request()->routeIs('vehicles.*') ? 'active' : '' }}">
+                    <span class="icon-indicator"></span>
                     <i class="fas fa-car"></i>
-                    My Vehicles
+                    <span class="label">My Vehicles</span>
                 </a>
             </li>
             <li>
                 <a href="{{ route('maintenance.index') }}" class="{{ request()->routeIs('maintenance.*') ? 'active' : '' }}">
+                    <span class="icon-indicator"></span>
                     <i class="fas fa-wrench"></i>
-                    Maintenance
+                    <span class="label">Maintenance</span>
                 </a>
             </li>
             <li>
                 <a href="{{ route('renewals.index') }}" class="{{ request()->routeIs('renewals.*') ? 'active' : '' }}">
+                    <span class="icon-indicator"></span>
                     <i class="fas fa-bell"></i>
-                    Renewals & Alerts
+                    <span class="label">Renewals & Alerts</span>
                 </a>
             </li>
             <li>
                 <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">
+                    <span class="icon-indicator"></span>
                     <i class="fas fa-user-cog"></i>
-                    Profile & Settings
+                    <span class="label">Profile & Settings</span>
                 </a>
             </li>
             <li>
                 <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
                     @csrf
                     <a href="#" onclick="event.preventDefault(); this.closest('form').submit();">
+                        <span class="icon-indicator"></span>
                         <i class="fas fa-sign-out-alt"></i>
-                        Logout
+                        <span class="label">Logout</span>
                     </a>
                 </form>
             </li>
@@ -540,6 +641,8 @@
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const menuToggle = document.getElementById('menuToggle');
         const sidebar = document.getElementById('sidebar');
@@ -551,10 +654,38 @@
                 sidebar.classList.toggle('show');
                 sidebarOverlay.classList.toggle('show');
             } else {
-                sidebar.classList.toggle('hidden');
-                mainContent.classList.toggle('expanded');
+                // collapse to icon-only instead of fully hiding
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('collapsed');
+
+                // persist state so navigation (pagination / links) keeps it
+                try {
+                    const isCollapsed = sidebar.classList.contains('collapsed');
+                    localStorage.setItem('sidebarCollapsed', isCollapsed ? '1' : '0');
+                } catch (e) {
+                    // ignore storage errors
+                }
             }
         }
+
+        // Apply persisted sidebar state on load
+        function applySidebarState() {
+            try {
+                const val = localStorage.getItem('sidebarCollapsed');
+                if (val === '1' && window.innerWidth > 768) {
+                    sidebar.classList.add('collapsed');
+                    mainContent.classList.add('collapsed');
+                } else {
+                    sidebar.classList.remove('collapsed');
+                    mainContent.classList.remove('collapsed');
+                }
+            } catch (e) {
+                // ignore
+            }
+        }
+
+        // Run on initial load
+        applySidebarState();
 
         menuToggle.addEventListener('click', toggleSidebar);
 
@@ -580,6 +711,61 @@
             if (window.innerWidth > 768) {
                 sidebar.classList.remove('show');
                 sidebarOverlay.classList.remove('show');
+            }
+        });
+
+        // SweetAlert2: intercept forms with class `swal-confirm`
+        document.addEventListener('click', function(e) {
+            const target = e.target.closest('[data-swal-confirm], .swal-confirm');
+            if (!target) return;
+
+            // If element is a button inside a form or an anchor that submits a form
+            let form = null;
+            if (target.matches('form')) form = target;
+            else form = target.closest('form');
+
+            const message = target.getAttribute('data-swal-message') || target.getAttribute('data-message') || 'Are you sure?';
+            const title = target.getAttribute('data-swal-title') || 'Please confirm';
+
+            if (form) {
+                e.preventDefault();
+                Swal.fire({
+                    title: title,
+                    text: message,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // submit the form
+                        form.submit();
+                    }
+                });
+            }
+        });
+
+        // Display Laravel session flashes using SweetAlert2 (success / error / info)
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const flash = {
+                    success: {!! json_encode(session('success')) !!},
+                    error: {!! json_encode(session('error')) !!},
+                    info: {!! json_encode(session('info')) !!},
+                    message: {!! json_encode(session('message')) !!},
+                    status: {!! json_encode(session('status')) !!}
+                };
+
+                if (flash.success) {
+                    Swal.fire({icon: 'success', title: flash.success, timer: 2500, showConfirmButton: false});
+                } else if (flash.error) {
+                    Swal.fire({icon: 'error', title: flash.error, timer: 3500, showConfirmButton: false});
+                } else if (flash.info) {
+                    Swal.fire({icon: 'info', title: flash.info, timer: 2500, showConfirmButton: false});
+                }
+            } catch (e) {
+                // ignore JSON/render issues
             }
         });
     </script>

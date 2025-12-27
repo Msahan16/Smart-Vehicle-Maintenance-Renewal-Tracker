@@ -16,14 +16,7 @@
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="col-12">
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        </div>
-    @endif
+    {{-- Flash handled by SweetAlert2 in layout --}}
 
     <!-- Vehicle License Documents -->
     <div class="col-lg-6 mb-4">

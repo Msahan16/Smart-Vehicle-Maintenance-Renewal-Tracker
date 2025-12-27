@@ -15,19 +15,40 @@
     </div>
 </div>
 
-@if(session('message'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('message') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
+{{-- Flash handled by SweetAlert2 in layout --}}
 
 <div class="row">
     @forelse(auth()->user()->vehicles as $vehicle)
         <div class="col-md-6 col-lg-4 mb-4">
             <div class="card-custom h-100">
-                @if($vehicle->photo)
-                    <img src="{{ Storage::url($vehicle->photo) }}" class="card-img-top" alt="{{ $vehicle->brand }}" style="height: 200px; object-fit: cover; border-radius: 15px 15px 0 0;">
+                @php
+                    // Resolve photo URL: support absolute URLs, storage paths, and public/storage
+                    $photoUrl = null;
+                    if (!empty($vehicle->photo)) {
+                        if (preg_match('/^https?:\/\//', $vehicle->photo)) {
+                            $photoUrl = $vehicle->photo;
+                        } else {
+                            try {
+                                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($vehicle->photo)) {
+                                    $photoUrl = \Illuminate\Support\Facades\Storage::url($vehicle->photo);
+                                } elseif (file_exists(public_path('storage/' . ltrim($vehicle->photo, '/')))) {
+                                    $photoUrl = asset('storage/' . ltrim($vehicle->photo, '/'));
+                                } else {
+                                    // sometimes the stored path already contains 'public/' prefix
+                                    $maybe = preg_replace('#^public/#', '', $vehicle->photo);
+                                    if (\Illuminate\Support\Facades\Storage::disk('public')->exists($maybe)) {
+                                        $photoUrl = \Illuminate\Support\Facades\Storage::url($maybe);
+                                    }
+                                }
+                            } catch (Exception $e) {
+                                $photoUrl = null;
+                            }
+                        }
+                    }
+                @endphp
+
+                @if(!empty($photoUrl))
+                    <img src="{{ $photoUrl }}" class="card-img-top" alt="{{ $vehicle->brand }}" style="height: 200px; object-fit: cover; border-radius: 15px 15px 0 0;">
                 @else
                     <div style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px 15px 0 0; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-car fa-4x text-white"></i>
@@ -87,10 +108,10 @@
                                     </a>
                                 </div>
                             </div>
-                            <form action="{{ route('vehicles.destroy', $vehicle) }}" method="POST">
+                            <form action="{{ route('vehicles.destroy', $vehicle) }}" method="POST" class="swal-confirm" data-swal-message="Are you sure you want to delete this vehicle?">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('Are you sure you want to delete this vehicle?')" title="Delete Vehicle">
+                                <button type="submit" class="btn btn-outline-danger w-100" title="Delete Vehicle">
                                     <i class="fas fa-trash me-1"></i>Delete
                                 </button>
                             </form>

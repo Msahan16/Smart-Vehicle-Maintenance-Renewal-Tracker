@@ -15,12 +15,7 @@
     </div>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
+{{-- Flash handled by SweetAlert2 in layout --}}
 
 <div class="card-custom">
     <div class="card-body">
@@ -78,7 +73,7 @@
                                     <a href="{{ route('maintenance.edit', $record) }}" class="btn btn-outline-primary" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('maintenance.destroy', $record) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this maintenance record?')">
+                                    <form action="{{ route('maintenance.destroy', $record) }}" method="POST" class="d-inline swal-confirm" data-swal-message="Are you sure you want to delete this maintenance record?">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-outline-danger" title="Delete">
