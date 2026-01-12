@@ -7,7 +7,7 @@
     <title>{{ config('app.name', 'Smart Vehicle Tracker') }} - @yield('title', 'Login')</title>
     
     <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'><path fill='%23667eea' d='M171.3 96H224v96H111.3l30.4-75.9C146.5 104 158.2 96 171.3 96zM272 192V96h81.2c9.7 0 18.9 4.4 25 12l67.2 84H272zm256.2 1L428.2 68c-18.2-22.8-45.8-36-75-36H171.3c-39.3 0-74.6 23.9-89.1 60.3L40.6 196.4C16.8 205.8 0 228.9 0 256V368c0 17.7 14.3 32 32 32H65.3c7.6 45.4 47.1 80 94.7 80s87.1-34.6 94.7-80H385.3c7.6 45.4 47.1 80 94.7 80s87.1-34.6 94.7-80H608c17.7 0 32-14.3 32-32V320c0-65.2-48.8-119-111.8-127zM434.7 368a48 48 0 1 1 90.5 32 48 48 0 1 1 -90.5-32zM160 336a48 48 0 1 1 0 96 48 48 0 1 1 0-96z'/></svg>" type="image/svg+xml">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'><path fill='%231e40af' d='M171.3 96H224v96H111.3l30.4-75.9C146.5 104 158.2 96 171.3 96zM272 192V96h81.2c9.7 0 18.9 4.4 25 12l67.2 84H272zm256.2 1L428.2 68c-18.2-22.8-45.8-36-75-36H171.3c-39.3 0-74.6 23.9-89.1 60.3L40.6 196.4C16.8 205.8 0 228.9 0 256V368c0 17.7 14.3 32 32 32H65.3c7.6 45.4 47.1 80 94.7 80s87.1-34.6 94.7-80H385.3c7.6 45.4 47.1 80 94.7 80s87.1-34.6 94.7-80H608c17.7 0 32-14.3 32-32V320c0-65.2-48.8-119-111.8-127zM434.7 368a48 48 0 1 1 90.5 32 48 48 0 1 1 -90.5-32zM160 336a48 48 0 1 1 0 96 48 48 0 1 1 0-96z'/></svg>" type="image/svg+xml">
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,16 +16,15 @@
     <!-- Custom CSS -->
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
+            --brand-blue: #134e7f;
+            --brand-green: #10b981;
+            --primary-color: #334155;
+            --secondary-color: #64748b;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #f1f5f9;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -40,129 +39,145 @@
 
         .auth-card {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08); /* Softer shadow */
             overflow: hidden;
+            border: 1px solid #e2e8f0;
         }
 
         .auth-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px 30px;
+            background: white; /* Clean white header like main app */
+            padding: 40px 30px 20px;
             text-align: center;
-            color: white;
+            color: var(--primary-color);
         }
 
         .auth-header .icon-wrapper {
-            width: 80px;
-            height: 80px;
-            background: white;
-            border-radius: 50%;
+            width: 64px;
+            height: 64px;
+            background: #eff6ff; /* Light blue bg */
+            border-radius: 12px;
             margin: 0 auto 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: none;
         }
 
         .auth-header .icon-wrapper i {
-            font-size: 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 32px;
+            color: var(--brand-blue);
+            background: none;
+            -webkit-text-fill-color: var(--brand-blue);
         }
 
         .auth-header h1 {
             font-size: 24px;
             font-weight: 700;
             margin: 0;
+            color: #0f172a;
         }
 
         .auth-header p {
-            margin: 5px 0 0;
-            opacity: 0.9;
+            margin: 8px 0 0;
+            opacity: 1;
+            color: #64748b;
             font-size: 14px;
         }
 
         .auth-body {
-            padding: 40px 30px;
+            padding: 20px 30px 40px;
         }
 
         .form-label {
-            font-weight: 600;
-            color: #2c3e50;
+            font-weight: 500;
+            color: #334155;
             margin-bottom: 8px;
+            font-size: 14px;
         }
 
         .form-control {
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 12px 15px;
-            transition: all 0.3s;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 14px;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
         .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            border-color: var(--brand-blue);
+            box-shadow: 0 0 0 3px rgba(19, 78, 127, 0.1); /* Brand blue ring */
+            outline: none;
         }
 
         .input-group-text {
-            background: #f8f9fa;
-            border: 2px solid #e0e0e0;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
             border-right: none;
-            border-radius: 10px 0 0 10px;
+            border-radius: 8px 0 0 8px;
+            color: #64748b;
         }
 
         .input-group .form-control {
             border-left: none;
-            border-radius: 0 10px 10px 0;
+            border-radius: 0 8px 8px 0;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--brand-green); /* Action Green */
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             padding: 12px;
             font-weight: 600;
-            transition: transform 0.2s;
+            transition: all 0.2s;
+            width: 100%;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            background: #059669;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
         }
 
         .auth-footer {
             text-align: center;
             padding: 20px 30px;
-            background: #f8f9fa;
-            border-top: 1px solid #e0e0e0;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
         }
 
         .auth-footer a {
-            color: #667eea;
+            color: var(--brand-blue);
             text-decoration: none;
             font-weight: 600;
+            font-size: 14px;
         }
 
         .auth-footer a:hover {
+            color: #0f3d64;
             text-decoration: underline;
         }
 
         .alert {
-            border-radius: 10px;
+            border-radius: 8px;
             border: none;
+            font-size: 14px;
         }
 
+        /* Background Pattern - Optional but nice */
         .vehicle-bg {
             position: fixed;
-            bottom: 0;
+            top: 0;
             left: 0;
             width: 100%;
-            height: 200px;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,101.3C1248,85,1344,75,1392,69.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
-            background-size: cover;
-            pointer-events: none;
+            height: 100%;
+            background: var(--brand-blue); /* Solid Brand Blue Background */
+            z-index: -1;
         }
+        
+        /* Subtle texture or illustration overlay could go here, 
+           matches the "Login to LTI" modal overlay style */
     </style>
     @stack('styles')
 </head>
