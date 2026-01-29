@@ -72,7 +72,7 @@
 
                         <!-- Driver License Documents Section -->
                         <div class="col-12 mb-4">
-                            <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                            <div class="card" style="background: #134e7f; border: none;">
                                 <div class="card-body">
                                     <h6 class="mb-3 text-white"><i class="fas fa-id-card me-2"></i>Driver License Documents</h6>
                                     <div class="row">
@@ -130,10 +130,12 @@
                             </div>
                         </div>
 
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>Update Profile
-                            </button>
+                        <div class="col-12 mt-3">
+                            <div class="d-grid d-md-block">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Update Profile
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -170,9 +172,11 @@
                         <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-key me-2"></i>Update Password
-                    </button>
+                    <div class="d-grid d-md-block">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-key me-2"></i>Update Password
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

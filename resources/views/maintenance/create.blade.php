@@ -133,11 +133,11 @@
                             @enderror
                         </div>
 
-                        <div class="d-flex gap-2">
+                        <div class="d-flex flex-column flex-sm-row gap-2 mt-4">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-2"></i>Save Maintenance Record
                             </button>
-                            <a href="{{ route('maintenance.index') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('maintenance.index') }}" class="btn btn-outline-secondary text-center">
                                 <i class="fas fa-times me-2"></i>Cancel
                             </a>
                         </div>

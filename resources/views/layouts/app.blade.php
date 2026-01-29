@@ -40,10 +40,36 @@
             box-sizing: border-box;
         }
 
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+
         body {
             font-family: 'Inter', 'Segoe UI', sans-serif;
             background: #f1f5f9;
             color: #334155;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Improved Container Responsiveness */
+        .container-fluid {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        @media (max-width: 576px) {
+            .container-fluid {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
         }
 
         /* Sidebar */
@@ -239,6 +265,14 @@
             position: sticky;
             top: 0;
             z-index: 999;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                height: 60px;
+                padding: 0 15px;
+            }
         }
 
         .header-left h4 {
@@ -294,17 +328,24 @@
 
         /* Content Area */
         .content-area {
-            padding: 30px;
+            padding: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .content-area {
+                padding: 15px;
+            }
         }
 
         /* Stats Cards - Cleaner Look */
         .stat-card {
             background: white;
             border-radius: 12px;
-            padding: 24px;
+            padding: 20px;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Subtle shadow */
-            transition: transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            height: 100%;
         }
 
         .stat-card:hover {

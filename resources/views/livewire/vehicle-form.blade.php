@@ -93,13 +93,15 @@
                 @error('notes') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
 
-            <div class="col-12">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save me-2"></i>{{ $vehicle ? 'Update Vehicle' : 'Save Vehicle' }}
-                </button>
-                <a href="{{ route('vehicles.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-times me-2"></i>Cancel
-                </a>
+            <div class="col-12 mt-3">
+                <div class="d-flex flex-column flex-sm-row gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>{{ $vehicle ? 'Update Vehicle' : 'Save Vehicle' }}
+                    </button>
+                    <a href="{{ route('vehicles.index') }}" class="btn btn-secondary text-center">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </a>
+                </div>
             </div>
         </div>
     </form>

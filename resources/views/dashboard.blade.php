@@ -12,7 +12,7 @@
 
 <!-- Stats Cards -->
 <div class="row mb-4">
-    <div class="col-md-3 mb-3">
+    <div class="col-6 col-md-3 mb-3">
         <div class="stat-card primary">
             <div class="icon">
                 <i class="fas fa-car"></i>
@@ -21,7 +21,7 @@
             <p>Total Vehicles</p>
         </div>
     </div>
-    <div class="col-md-3 mb-3">
+    <div class="col-6 col-md-3 mb-3">
         <div class="stat-card success">
             <div class="icon">
                 <i class="fas fa-check-circle"></i>
@@ -30,7 +30,7 @@
             <p>Safe Renewals</p>
         </div>
     </div>
-    <div class="col-md-3 mb-3">
+    <div class="col-6 col-md-3 mb-3">
         <div class="stat-card warning">
             <div class="icon">
                 <i class="fas fa-exclamation-triangle"></i>
@@ -39,7 +39,7 @@
             <p>Due Soon</p>
         </div>
     </div>
-    <div class="col-md-3 mb-3">
+    <div class="col-6 col-md-3 mb-3">
         <div class="stat-card danger">
             <div class="icon">
                 <i class="fas fa-times-circle"></i>

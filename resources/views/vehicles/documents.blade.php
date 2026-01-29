@@ -68,9 +68,11 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>Update Vehicle License
-                    </button>
+                    <div class="d-grid d-md-block">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Update Vehicle License
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -126,9 +128,11 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>Update Insurance Documents
-                    </button>
+                    <div class="d-grid d-md-block">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Update Insurance Documents
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -184,9 +188,11 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>Update Emission Test Documents
-                    </button>
+                    <div class="d-grid d-md-block">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Update Emission Test Documents
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
