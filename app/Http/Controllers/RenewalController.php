@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\RenewalReminderMail;
 use App\Models\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
 
 class RenewalController extends Controller
 {
@@ -92,6 +91,7 @@ class RenewalController extends Controller
                     'days_left' => $daysLeft,
                 ];
             }
+
             if ($vehicle->insurance_expiry) {
                 $daysLeft = (int) Carbon::today()->diffInDays($vehicle->insurance_expiry, false);
                 $reminders[] = [
@@ -102,6 +102,7 @@ class RenewalController extends Controller
                     'days_left' => $daysLeft,
                 ];
             }
+
             if ($vehicle->emission_test_expiry) {
                 $daysLeft = (int) Carbon::today()->diffInDays($vehicle->emission_test_expiry, false);
                 $reminders[] = [
@@ -129,9 +130,32 @@ class RenewalController extends Controller
             return back()->with('info', 'No renewal data found to send.');
         }
 
+        $html = view('emails.renewal-reminder', [
+            'user' => $user,
+            'reminders' => $reminders,
+        ])->render();
+
         try {
-            Mail::to($user->email)->send(new RenewalReminderMail($user, $reminders));
-            return back()->with('success', 'Renewal reminder email sent to ' . $user->email);
+            $response = Http::withHeaders([
+                'api-key' => config('services.brevo.key'),
+                'Content-Type' => 'application/json',
+            ])->post('https://api.brevo.com/v3/smtp/email', [
+                'sender' => [
+                    'name' => config('mail.from.name'),
+                    'email' => config('mail.from.address'),
+                ],
+                'to' => [
+                    ['email' => $user->email],
+                ],
+                'subject' => 'Vehicle Renewal Reminder',
+                'htmlContent' => $html,
+            ]);
+
+            if ($response->successful()) {
+                return back()->with('success', 'Renewal reminder email sent to ' . $user->email);
+            }
+
+            return back()->with('error', 'Brevo API error: ' . $response->body());
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to send email: ' . $e->getMessage());
         }
