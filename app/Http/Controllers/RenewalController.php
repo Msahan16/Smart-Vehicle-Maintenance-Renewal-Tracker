@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\RenewalReminderMail;
 use App\Models\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class RenewalController extends Controller
 {
@@ -73,6 +75,68 @@ class RenewalController extends Controller
         return view('renewals.index', compact('renewals'));
     }
     
+    public function sendEmail()
+    {
+        $user = Auth::user();
+        $vehicles = $user->vehicles()->get();
+        $reminders = [];
+
+        foreach ($vehicles as $vehicle) {
+            if ($vehicle->license_expiry) {
+                $daysLeft = (int) Carbon::today()->diffInDays($vehicle->license_expiry, false);
+                $reminders[] = [
+                    'type' => 'Vehicle License',
+                    'vehicle' => $vehicle->brand . ' ' . $vehicle->model,
+                    'vehicle_number' => $vehicle->vehicle_number,
+                    'due_date' => Carbon::parse($vehicle->license_expiry)->format('M d, Y'),
+                    'days_left' => $daysLeft,
+                ];
+            }
+            if ($vehicle->insurance_expiry) {
+                $daysLeft = (int) Carbon::today()->diffInDays($vehicle->insurance_expiry, false);
+                $reminders[] = [
+                    'type' => 'Insurance',
+                    'vehicle' => $vehicle->brand . ' ' . $vehicle->model,
+                    'vehicle_number' => $vehicle->vehicle_number,
+                    'due_date' => Carbon::parse($vehicle->insurance_expiry)->format('M d, Y'),
+                    'days_left' => $daysLeft,
+                ];
+            }
+            if ($vehicle->emission_test_expiry) {
+                $daysLeft = (int) Carbon::today()->diffInDays($vehicle->emission_test_expiry, false);
+                $reminders[] = [
+                    'type' => 'Emission Test',
+                    'vehicle' => $vehicle->brand . ' ' . $vehicle->model,
+                    'vehicle_number' => $vehicle->vehicle_number,
+                    'due_date' => Carbon::parse($vehicle->emission_test_expiry)->format('M d, Y'),
+                    'days_left' => $daysLeft,
+                ];
+            }
+        }
+
+        if ($user->driver_license_expiry) {
+            $daysLeft = (int) Carbon::today()->diffInDays($user->driver_license_expiry, false);
+            $reminders[] = [
+                'type' => 'Driver License',
+                'vehicle' => 'N/A',
+                'vehicle_number' => $user->driver_license_number ?? 'N/A',
+                'due_date' => Carbon::parse($user->driver_license_expiry)->format('M d, Y'),
+                'days_left' => $daysLeft,
+            ];
+        }
+
+        if (empty($reminders)) {
+            return back()->with('info', 'No renewal data found to send.');
+        }
+
+        try {
+            Mail::to($user->email)->send(new RenewalReminderMail($user, $reminders));
+            return back()->with('success', 'Renewal reminder email sent to ' . $user->email);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to send email: ' . $e->getMessage());
+        }
+    }
+
     private function getStatus($daysLeft)
     {
         if ($daysLeft < 0) {

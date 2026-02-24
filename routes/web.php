@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     
     // Renewals routes
     Route::get('/renewals', [RenewalController::class, 'index'])->name('renewals.index');
+    Route::post('/renewals/send-email', [RenewalController::class, 'sendEmail'])->name('renewals.send-email');
     
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
