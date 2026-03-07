@@ -70,6 +70,9 @@
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
+                                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#maintenanceDetailsModal{{ $record->id }}" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                     <a href="{{ route('maintenance.edit', $record) }}" class="btn btn-outline-primary" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
@@ -106,8 +109,105 @@
     </div>
 </div>
 
-<!-- Document Modals -->
+<!-- Document & Details Modals -->
 @foreach($maintenanceRecords as $record)
+    <!-- Maintenance Details Modal -->
+    <div class="modal fade" id="maintenanceDetailsModal{{ $record->id }}" tabindex="-1" aria-labelledby="maintenanceDetailsModalLabel{{ $record->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="maintenanceDetailsModalLabel{{ $record->id }}">
+                        <i class="fas fa-wrench me-2"></i>Maintenance Details
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-primary border-bottom pb-2">Vehicle Information</h6>
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <th width="40%">Vehicle:</th>
+                                    <td>{{ $record->vehicle->brand }} {{ $record->vehicle->model }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Reg Number:</th>
+                                    <td><strong>{{ $record->vehicle->vehicle_number }}</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-primary border-bottom pb-2">Service Information</h6>
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <th width="40%">Service Type:</th>
+                                    <td>{{ $record->service_type }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Service Date:</th>
+                                    <td>{{ $record->service_date->format('M d, Y') }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Mileage:</th>
+                                    <td>{{ $record->mileage ? number_format($record->mileage) . ' km' : 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Cost:</th>
+                                    <td><strong>{{ $record->cost ? '$' . number_format($record->cost, 2) : 'N/A' }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <th>Service Center:</th>
+                                    <td>{{ $record->service_center ?? 'N/A' }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    @if($record->next_due_date)
+                    <div class="alert alert-info py-2 mb-3">
+                        <i class="fas fa-calendar-alt me-2"></i>Next service recommended by: <strong>{{ $record->next_due_date->format('M d, Y') }}</strong>
+                    </div>
+                    @endif
+
+                    @if($record->notes)
+                    <div class="mt-3">
+                        <h6 class="text-primary">Service Notes:</h6>
+                        <p class="text-muted small p-2 bg-light rounded">{{ $record->notes }}</p>
+                    </div>
+                    @endif
+
+                    @if($record->service_bill || $record->related_document)
+                    <div class="mt-4">
+                        <h6 class="text-primary">Attached Documents:</h6>
+                        <div class="d-flex gap-3 mt-2">
+                            @if($record->service_bill)
+                            <div class="text-center">
+                                <a href="{{ Storage::url($record->service_bill) }}" target="_blank" class="d-block mb-1">
+                                    <img src="{{ Storage::url($record->service_bill) }}" class="rounded shadow-sm" style="width: 100px; height: 100px; object-fit: cover;" alt="Service Bill">
+                                </a>
+                                <small class="text-muted">Service Bill</small>
+                            </div>
+                            @endif
+                            @if($record->related_document)
+                            <div class="text-center">
+                                <a href="{{ Storage::url($record->related_document) }}" target="_blank" class="d-block mb-1">
+                                    <img src="{{ Storage::url($record->related_document) }}" class="rounded shadow-sm" style="width: 100px; height: 100px; object-fit: cover;" alt="Related Document">
+                                </a>
+                                <small class="text-muted">Other Document</small>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                    @endif
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="{{ route('maintenance.edit', $record) }}" class="btn btn-primary">Edit Record</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @if($record->service_bill)
     <div class="modal fade" id="serviceBillModal{{ $record->id }}" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">

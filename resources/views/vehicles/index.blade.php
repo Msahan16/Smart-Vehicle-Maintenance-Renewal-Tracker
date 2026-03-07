@@ -96,6 +96,9 @@
                     
                     <div class="mt-auto">
                         <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#vehicleDetailsModal{{ $vehicle->id }}">
+                                <i class="fas fa-eye me-1"></i>View Details
+                            </button>
                             <div class="row g-2">
                                 <div class="col-6">
                                     <a href="{{ route('vehicles.edit', $vehicle) }}" class="btn btn-outline-primary w-100" title="Edit Vehicle">
@@ -116,6 +119,122 @@
                                 </button>
                             </form>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicle Details Modal -->
+        <div class="modal fade" id="vehicleDetailsModal{{ $vehicle->id }}" tabindex="-1" aria-labelledby="vehicleDetailsModalLabel{{ $vehicle->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="vehicleDetailsModalLabel{{ $vehicle->id }}">
+                            <i class="fas fa-car me-2"></i>{{ $vehicle->brand }} {{ $vehicle->model }} Details
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-5 mb-3">
+                                @if(!empty($photoUrl))
+                                    <img src="{{ $photoUrl }}" class="img-fluid rounded shadow-sm" alt="{{ $vehicle->brand }}">
+                                @else
+                                    <div class="rounded shadow-sm d-flex align-items-center justify-content-center bg-light" style="height: 250px;">
+                                        <i class="fas fa-car fa-5x text-muted"></i>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="col-md-7">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-borderless">
+                                        <tr>
+                                            <th width="40%">Vehicle Number:</th>
+                                            <td><strong>{{ $vehicle->vehicle_number }}</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Fuel Type:</th>
+                                            <td>{{ $vehicle->fuel_type }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Engine Capacity:</th>
+                                            <td>{{ $vehicle->engine_capacity ?? 'N/A' }} cc</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Manufactured Year:</th>
+                                            <td>{{ $vehicle->manufactured_year }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Color:</th>
+                                            <td>{{ $vehicle->color ?? 'N/A' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>License Expiry:</th>
+                                            <td>
+                                                @if($vehicle->license_expiry)
+                                                    @php
+                                                        $L_daysLeft = now()->diffInDays($vehicle->license_expiry, false);
+                                                        $L_badgeClass = $L_daysLeft < 0 ? 'overdue' : ($L_daysLeft <= 30 ? 'due-soon' : 'safe');
+                                                    @endphp
+                                                    <span class="badge {{ $L_badgeClass }}">{{ $vehicle->license_expiry->format('M d, Y') }}</span>
+                                                @else
+                                                    <span class="text-muted">Not set</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Insurance Expiry:</th>
+                                            <td>
+                                                @if($vehicle->insurance_expiry)
+                                                    @php
+                                                        $I_daysLeft = now()->diffInDays($vehicle->insurance_expiry, false);
+                                                        $I_badgeClass = $I_daysLeft < 0 ? 'overdue' : ($I_daysLeft <= 30 ? 'due-soon' : 'safe');
+                                                    @endphp
+                                                    <span class="badge {{ $I_badgeClass }}">{{ $vehicle->insurance_expiry->format('M d, Y') }}</span>
+                                                @else
+                                                    <span class="text-muted">Not set</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @if($vehicle->emission_test_expiry)
+                                        <tr>
+                                            <th>Emission Expiry:</th>
+                                            <td><span class="badge bg-secondary">{{ $vehicle->emission_test_expiry->format('M d, Y') }}</span></td>
+                                        </tr>
+                                        @endif
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        @if($vehicle->notes)
+                        <div class="mt-3">
+                            <h6><i class="fas fa-sticky-note me-2 text-primary"></i>Notes:</h6>
+                            <p class="text-muted small p-2 bg-light rounded">{{ $vehicle->notes }}</p>
+                        </div>
+                        @endif
+
+                        <div class="mt-4">
+                            <h6><i class="fas fa-history me-2 text-primary"></i>Recent Maintenance:</h6>
+                            @if($vehicle->maintenanceRecords->count() > 0)
+                                <div class="list-group list-group-flush">
+                                    @foreach($vehicle->maintenanceRecords->sortByDesc('service_date')->take(3) as $record)
+                                        <div class="list-group-item px-0">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>{{ $record->service_type }}</span>
+                                                <small class="text-muted">{{ $record->service_date->format('M d, Y') }}</small>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="text-muted small">No maintenance records found.</p>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <a href="{{ route('vehicles.edit', $vehicle) }}" class="btn btn-primary">Edit Vehicle</a>
                     </div>
                 </div>
             </div>
