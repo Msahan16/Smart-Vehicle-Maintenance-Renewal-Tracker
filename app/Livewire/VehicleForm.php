@@ -34,7 +34,7 @@ class VehicleForm extends Component
     public function rules()
     {
         return [
-            'vehicle_number' => 'required|string|max:255',
+            'vehicle_number' => 'required|string|max:255|unique:vehicles,vehicle_number,' . ($this->vehicle ? $this->vehicle->id : 'NULL'),
             'brand' => 'required|string|max:255',
             'model' => 'required|string|max:255',
             'fuel_type' => 'required|in:Petrol,Diesel,Electric,Hybrid,CNG,LPG',
