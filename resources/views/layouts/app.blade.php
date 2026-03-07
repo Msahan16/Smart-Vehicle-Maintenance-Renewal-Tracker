@@ -19,11 +19,13 @@
             --sidebar-width: 260px;
             --header-height: 70px;
             /* Core Brand Colors */
-            --brand-blue: #134e7f;
-            --brand-green: #10b981;
+            --brand-blue: #1e3a5f; /* Darker Navy */
+            --brand-green: #10b981; /* Emerald Green */
+            --brand-green-hover: #059669;
             
             /* Theme Mappings */
-            --sidebar-bg: var(--brand-blue);
+            --sidebar-bg: #134e7f;
+            --sidebar-active-bg: rgba(255, 255, 255, 0.15);
             --primary-color: var(--brand-blue);
             --secondary-color: #64748b;
             
@@ -81,11 +83,13 @@
             width: var(--sidebar-width);
             background: var(--sidebar-bg); /* Solid Blue, no gradient */
             color: white;
-            padding: 20px 0;
+            padding: 24px 0;
             z-index: 1000;
             overflow-y: auto;
             transition: all 0.25s ease;
             box-shadow: 4px 0 24px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
         }
 
         /* Collapsed (icon-only) sidebar */
@@ -165,10 +169,10 @@
         }
 
         .sidebar-brand .icon {
-            width: 32px;
-            height: 32px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 6px;
+            width: 42px;
+            height: 42px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -177,7 +181,7 @@
         }
 
         .sidebar-brand .icon i {
-            font-size: 16px;
+            font-size: 20px;
             color: white;
             background: none;
             -webkit-text-fill-color: white;
@@ -186,22 +190,28 @@
 
         .sidebar-menu {
             list-style: none;
-            padding: 0 12px;
+            padding: 0 16px;
+            flex-grow: 1;
         }
 
-        .sidebar-menu li a {
+        .sidebar-footer {
+            padding: 20px 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-menu li a,
+        .sidebar-footer a {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 16px;
-            color: rgba(255,255,255,0.7);
+            padding: 14px 16px;
+            color: rgba(255,255,255,0.8);
             text-decoration: none;
             transition: all 0.2s;
-            border-left: none;
-            border-radius: 8px;
-            margin-bottom: 4px;
+            border-radius: 12px;
+            margin-bottom: 8px;
             font-weight: 500;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .sidebar-menu li a .label {
@@ -210,16 +220,24 @@
         }
 
         .sidebar-menu li a:hover,
-        .sidebar-menu li a.active {
-            background: rgba(255, 255, 255, 0.1);
+        .sidebar-footer a:hover {
+            background: rgba(255, 255, 255, 0.08);
             color: white;
             border-left: none;
         }
 
-        .sidebar-menu li a i {
-            width: 20px;
+        .sidebar-menu li a.active {
+            background: var(--sidebar-active-bg);
+            color: white;
+            border-left: none;
+        }
+
+        .sidebar-menu li a i,
+        .sidebar-footer a i {
+            width: 24px;
             text-align: center;
-            font-size: 16px;
+            font-size: 18px;
+            opacity: 0.9;
         }
 
         .icon-indicator {
@@ -452,28 +470,53 @@
         .btn-primary {
             background: var(--brand-green);
             border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-weight: 500;
+            border-radius: 8px; /* Slightly smaller radius */
+            padding: 8px 16px; /* Reduced from 12px 24px */
+            font-weight: 600;
+            font-size: 14px; /* Added explicit font size */
             color: white;
             transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-primary:hover {
-            background: #059669; /* Darker green on hover */
+            background: var(--brand-green-hover);
             transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
         }
 
         .btn-outline-primary {
-            color: var(--brand-blue);
-            border-color: var(--brand-blue);
+            color: #4b5563; /* Gray-600 */
+            border: 1px solid #e5e7eb; /* Gray-200 */
             border-radius: 8px;
+            padding: 8px 12px;
+            font-weight: 600;
+            font-size: 14px;
+            background: white;
         }
 
         .btn-outline-primary:hover {
-            background: var(--brand-blue);
-            color: white;
+            background: #f9fafb;
+            border-color: #d1d5db;
+            color: #111827;
+        }
+
+        .btn-outline-danger {
+            color: #ef4444;
+            border: 1px solid #fee2e2;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-weight: 600;
+            font-size: 14px;
+            background: white;
+        }
+
+        .btn-outline-danger:hover {
+            background: #fff1f2;
+            border-color: #fecaca;
+            color: #dc2626;
         }
 
         @media (max-width: 768px) {
@@ -615,6 +658,25 @@
                 box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
             }
         }
+        /* Table Utilities */
+        .bg-light-hover:hover {
+            background-color: #f1f5f9 !important;
+            border-radius: 8px;
+        }
+        .hover-opacity:hover {
+            opacity: 0.8;
+        }
+        .text-blue-600 { color: #2563eb; }
+        .bg-blue-50 { background-color: #eff6ff; }
+        
+        .table thead th {
+            border-top: none;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .table tbody td {
+            border-bottom: 1px solid #f1f5f9;
+        }
     </style>
     @livewireStyles
     @stack('styles')
@@ -635,50 +697,45 @@
         <ul class="sidebar-menu">
             <li>
                 <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                    <span class="icon-indicator"></span>
-                    <i class="fas fa-home"></i>
+                    <i class="fas fa-th-large"></i>
                     <span class="label">Dashboard</span>
                 </a>
             </li>
             <li>
                 <a href="{{ route('vehicles.index') }}" class="{{ request()->routeIs('vehicles.*') ? 'active' : '' }}">
-                    <span class="icon-indicator"></span>
-                    <i class="fas fa-car"></i>
+                    <i class="fas fa-car-side"></i>
                     <span class="label">My Vehicles</span>
                 </a>
             </li>
             <li>
                 <a href="{{ route('maintenance.index') }}" class="{{ request()->routeIs('maintenance.*') ? 'active' : '' }}">
-                    <span class="icon-indicator"></span>
                     <i class="fas fa-wrench"></i>
                     <span class="label">Maintenance</span>
                 </a>
             </li>
             <li>
                 <a href="{{ route('renewals.index') }}" class="{{ request()->routeIs('renewals.*') ? 'active' : '' }}">
-                    <span class="icon-indicator"></span>
                     <i class="fas fa-bell"></i>
                     <span class="label">Renewals & Alerts</span>
                 </a>
             </li>
             <li>
                 <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">
-                    <span class="icon-indicator"></span>
-                    <i class="fas fa-user-cog"></i>
+                    <i class="fas fa-user-circle"></i>
                     <span class="label">Profile & Settings</span>
                 </a>
             </li>
-            <li>
-                <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
-                    @csrf
-                    <a href="#" onclick="event.preventDefault(); this.closest('form').submit();">
-                        <span class="icon-indicator"></span>
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span class="label">Logout</span>
-                    </a>
-                </form>
-            </li>
         </ul>
+
+        <div class="sidebar-footer">
+            <form method="POST" action="{{ route('logout') }}" id="logout-form">
+                @csrf
+                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="label">Logout</span>
+                </a>
+            </form>
+        </div>
     </aside>
 
     <!-- Main Content -->

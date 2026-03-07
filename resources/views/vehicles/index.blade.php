@@ -54,40 +54,41 @@
                         <i class="fas fa-car fa-4x text-white"></i>
                     </div>
                 @endif
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title mb-2">{{ $vehicle->brand }} {{ $vehicle->model }}</h5>
-                    <div class="mb-3">
-                        <p class="text-muted mb-2">
-                            <i class="fas fa-id-card me-2"></i>{{ $vehicle->vehicle_number }}
-                        </p>
-                        <div>
-                            <span class="badge bg-info me-1">{{ $vehicle->fuel_type }}</span>
-                            <span class="badge bg-secondary">{{ $vehicle->manufactured_year }}</span>
-                        </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="card-title mb-1 fw-bold" style="font-size: 1.25rem;">{{ $vehicle->brand }} {{ $vehicle->model }}</h5>
+                    <p class="text-muted small mb-3">
+                        <i class="far fa-id-card me-1"></i> {{ $vehicle->vehicle_number }}
+                    </p>
+
+                    <div class="mb-4">
+                        <span class="badge py-2 px-3 me-2" style="background: #e0f2fe; color: #0369a1; text-transform: uppercase; font-size: 0.75rem;">{{ $vehicle->fuel_type }}</span>
+                        <span class="badge py-2 px-3" style="background: #f1f5f9; color: #475569; font-size: 0.75rem;">{{ $vehicle->manufactured_year }}</span>
                     </div>
                     
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-muted small"><i class="fas fa-id-card-alt me-1"></i>License:</span>
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small fw-medium"><i class="far fa-address-card me-2"></i>License:</span>
                             @if($vehicle->license_expiry)
                                 @php
                                     $daysLeft = now()->diffInDays($vehicle->license_expiry, false);
-                                    $badgeClass = $daysLeft < 0 ? 'overdue' : ($daysLeft <= 30 ? 'due-soon' : 'safe');
+                                    $badgeStyle = $daysLeft < 0 ? 'background: #fee2e2; color: #991b1b;' : ($daysLeft <= 30 ? 'background: #fef3c7; color: #92400e;' : 'background: #fef2f2; color: #b91c1c;'); 
+                                    // Image shows red background for both license and insurance in some cases, but I'll stick to logic or match image colors.
+                                    // In the image, Suzuki Camry has Dec 30, 2025 and Jan 27, 2026 both in red-ish background.
                                 @endphp
-                                <span class="badge {{ $badgeClass }}">{{ $vehicle->license_expiry->format('M d, Y') }}</span>
+                                <span class="badge px-3 py-2 fw-bold" style="{{ $badgeStyle }} font-size: 0.85rem;">{{ $vehicle->license_expiry->format('M d, Y') }}</span>
                             @else
                                 <span class="badge bg-secondary">Not set</span>
                             @endif
                         </div>
                         
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted small"><i class="fas fa-shield-alt me-1"></i>Insurance:</span>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="text-muted small fw-medium"><i class="far fa-check-circle me-2"></i>Insurance:</span>
                             @if($vehicle->insurance_expiry)
                                 @php
                                     $daysLeft = now()->diffInDays($vehicle->insurance_expiry, false);
-                                    $badgeClass = $daysLeft < 0 ? 'overdue' : ($daysLeft <= 30 ? 'due-soon' : 'safe');
+                                    $badgeStyle = $daysLeft < 0 ? 'background: #fee2e2; color: #991b1b;' : ($daysLeft <= 30 ? 'background: #fef3c7; color: #92400e;' : 'background: #ecfdf5; color: #065f46;');
                                 @endphp
-                                <span class="badge {{ $badgeClass }}">{{ $vehicle->insurance_expiry->format('M d, Y') }}</span>
+                                <span class="badge px-3 py-2 fw-bold" style="{{ $badgeStyle }} font-size: 0.85rem;">{{ $vehicle->insurance_expiry->format('M d, Y') }}</span>
                             @else
                                 <span class="badge bg-secondary">Not set</span>
                             @endif
@@ -95,27 +96,24 @@
                     </div>
                     
                     <div class="mt-auto">
-                        <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#vehicleDetailsModal{{ $vehicle->id }}">
-                                <i class="fas fa-eye me-1"></i>View Details
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="btn btn-primary flex-grow-1" data-bs-toggle="modal" data-bs-target="#vehicleDetailsModal{{ $vehicle->id }}">
+                                <i class="far fa-eye me-2"></i>Details
                             </button>
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <a href="{{ route('vehicles.edit', $vehicle) }}" class="btn btn-outline-primary w-100" title="Edit Vehicle">
-                                        <i class="fas fa-edit me-1"></i>Edit
-                                    </a>
-                                </div>
-                                <div class="col-6">
-                                    <a href="{{ route('vehicles.documents', $vehicle) }}" class="btn btn-outline-info w-100" title="Manage Documents">
-                                        <i class="fas fa-file-alt me-1"></i>Documents
-                                    </a>
-                                </div>
-                            </div>
-                            <form action="{{ route('vehicles.destroy', $vehicle) }}" method="POST" class="swal-confirm" data-swal-message="Are you sure you want to delete this vehicle?">
+                            
+                            <a href="{{ route('vehicles.edit', $vehicle) }}" class="btn btn-outline-primary" title="Edit">
+                                <i class="far fa-edit"></i>
+                            </a>
+                            
+                            <a href="{{ route('vehicles.documents', $vehicle) }}" class="btn btn-outline-primary" title="Documents">
+                                <i class="far fa-file-alt"></i>
+                            </a>
+                            
+                            <form action="{{ route('vehicles.destroy', $vehicle) }}" method="POST" class="swal-confirm m-0" data-swal-message="Are you sure you want to delete this vehicle?">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-outline-danger w-100" title="Delete Vehicle">
-                                    <i class="fas fa-trash me-1"></i>Delete
+                                <button type="submit" class="btn btn-outline-danger" title="Delete">
+                                    <i class="far fa-trash-alt"></i>
                                 </button>
                             </form>
                         </div>

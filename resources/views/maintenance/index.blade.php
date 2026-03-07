@@ -17,70 +17,98 @@
 
 {{-- Flash handled by SweetAlert2 in layout --}}
 
-<div class="card-custom">
-    <div class="card-body">
+<div class="card-custom border-0 shadow-sm">
+    <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-muted">
                     <tr>
-                        <th>Date</th>
-                        <th>Vehicle</th>
-                        <th>Service Type</th>
-                        <th>Service Center</th>
-                        <th>Cost</th>
-                        <th>Next Service Date</th>
-                        <th>Documents</th>
-                        <th>Actions</th>
+                        <th class="ps-4 py-3 text-uppercase font-size-12 fw-bold" style="font-size: 0.75rem; letter-spacing: 0.05em;">Date</th>
+                        <th class="py-3 text-uppercase font-size-12 fw-bold" style="font-size: 0.75rem; letter-spacing: 0.05em;">Vehicle</th>
+                        <th class="py-3 text-uppercase font-size-12 fw-bold" style="font-size: 0.75rem; letter-spacing: 0.05em;">Service Type</th>
+                        <th class="py-3 text-uppercase font-size-12 fw-bold" style="font-size: 0.75rem; letter-spacing: 0.05em;">Service Center</th>
+                        <th class="py-3 text-uppercase font-size-12 fw-bold" style="font-size: 0.75rem; letter-spacing: 0.05em;">Cost</th>
+                        <th class="py-3 text-uppercase font-size-12 fw-bold" style="font-size: 0.75rem; letter-spacing: 0.05em;">Next Service</th>
+                        <th class="py-3 text-uppercase font-size-12 fw-bold text-center" style="font-size: 0.75rem; letter-spacing: 0.05em;">Docs</th>
+                        <th class="pe-4 py-3 text-uppercase font-size-12 fw-bold text-end" style="font-size: 0.75rem; letter-spacing: 0.05em;">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="border-top-0">
                     @forelse($maintenanceRecords as $record)
                         <tr>
-                            <td>{{ $record->service_date->format('M d, Y') }}</td>
-                            <td>
-                                <strong>{{ $record->vehicle->vehicle_number }}</strong><br>
-                                <small class="text-muted">{{ $record->vehicle->brand }} {{ $record->vehicle->model }}</small>
-                            </td>
-                            <td>{{ $record->service_type }}</td>
-                            <td>{{ $record->service_center ?? '-' }}</td>
-                            <td>{{ $record->cost ? '$' . number_format($record->cost, 2) : '-' }}</td>
-                            <td>
-                                @if($record->next_due_date)
-                                    {{ $record->next_due_date->format('M d, Y') }}
-                                @else
-                                    <span class="text-muted">-</span>
-                                @endif
+                            <td class="ps-4">
+                                <span class="fw-semibold text-dark">{{ $record->service_date->format('M d, Y') }}</span>
                             </td>
                             <td>
-                                <div class="d-flex gap-1">
-                                    @if($record->service_bill)
-                                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#serviceBillModal{{ $record->id }}" title="Service Bill">
-                                            <i class="fas fa-file-invoice"></i>
-                                        </button>
-                                    @endif
-                                    @if($record->related_document)
-                                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#relatedDocModal{{ $record->id }}" title="Related Document">
-                                            <i class="fas fa-file-alt"></i>
-                                        </button>
-                                    @endif
-                                    @if(!$record->service_bill && !$record->related_document)
-                                        <span class="text-muted">-</span>
-                                    @endif
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-blue-50 text-blue-600 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 32px; height: 32px; background: #eff6ff; color: #1e40af;">
+                                        <i class="fas fa-car-side" style="font-size: 0.8rem;"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark">{{ $record->vehicle->vehicle_number }}</div>
+                                        <div class="text-muted small">{{ $record->vehicle->brand }} {{ $record->vehicle->model }}</div>
+                                    </div>
                                 </div>
                             </td>
                             <td>
-                                <div class="btn-group btn-group-sm">
-                                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#maintenanceDetailsModal{{ $record->id }}" title="View Details">
-                                        <i class="fas fa-eye"></i>
+                                <span class="badge rounded-pill fw-medium" style="background: #f1f5f9; color: #475569; padding: 6px 12px;">
+                                    {{ $record->service_type }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="text-secondary">{{ $record->service_center ?? '—' }}</span>
+                            </td>
+                            <td>
+                                @if($record->cost)
+                                    <span class="fw-bold text-dark">${{ number_format($record->cost, 2) }}</span>
+                                @else
+                                    <span class="text-muted">—</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($record->next_due_date)
+                                    @php
+                                        $isOverdue = $record->next_due_date->isPast();
+                                        $isSoon = !$isOverdue && $record->next_due_date->diffInDays(now()) <= 14;
+                                        $color = $isOverdue ? '#ef4444' : ($isSoon ? '#f59e0b' : '#64748b');
+                                    @endphp
+                                    <span class="small fw-medium" style="color: {{ $color }};">
+                                        <i class="far fa-calendar-alt me-1"></i>{{ $record->next_due_date->format('M d, Y') }}
+                                    </span>
+                                @else
+                                    <span class="text-muted small">—</span>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-1">
+                                    @if($record->service_bill)
+                                        <a href="#" class="text-info hover-opacity" data-bs-toggle="modal" data-bs-target="#serviceBillModal{{ $record->id }}" title="Bill">
+                                            <i class="fas fa-file-invoice" style="background: #e0f2fe; padding: 8px; border-radius: 6px;"></i>
+                                        </a>
+                                    @endif
+                                    @if($record->related_document)
+                                        <a href="#" class="text-info hover-opacity" data-bs-toggle="modal" data-bs-target="#relatedDocModal{{ $record->id }}" title="Doc">
+                                            <i class="fas fa-file-alt" style="background: #e0f2fe; padding: 8px; border-radius: 6px;"></i>
+                                        </a>
+                                    @endif
+                                    @if(!$record->service_bill && !$record->related_document)
+                                        <span class="text-muted">—</span>
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="pe-4 text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button type="button" class="btn btn-sm btn-outline-primary border-0 bg-light-hover" data-bs-toggle="modal" data-bs-target="#maintenanceDetailsModal{{ $record->id }}" title="View" style="padding: 6px 10px;">
+                                        <i class="far fa-eye text-primary"></i>
                                     </button>
-                                    <a href="{{ route('maintenance.edit', $record) }}" class="btn btn-outline-primary" title="Edit">
-                                        <i class="fas fa-edit"></i>
+                                    <a href="{{ route('maintenance.edit', $record) }}" class="btn btn-sm btn-outline-primary border-0 bg-light-hover" title="Edit" style="padding: 6px 10px;">
+                                        <i class="far fa-edit text-primary"></i>
                                     </a>
-                                    <form action="{{ route('maintenance.destroy', $record) }}" method="POST" class="d-inline swal-confirm" data-swal-message="Are you sure you want to delete this maintenance record?">
+                                    <form action="{{ route('maintenance.destroy', $record) }}" method="POST" class="d-inline swal-confirm m-0" data-swal-message="Are you sure?">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-outline-danger" title="Delete">
-                                            <i class="fas fa-trash"></i>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger border-0 bg-light-hover" title="Delete" style="padding: 6px 10px;">
+                                            <i class="far fa-trash-alt text-danger"></i>
                                         </button>
                                     </form>
                                 </div>
@@ -89,11 +117,13 @@
                     @empty
                         <tr>
                             <td colspan="8" class="text-center py-5">
-                                <i class="fas fa-wrench fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">No maintenance records yet</p>
-                                <a href="{{ route('maintenance.create') }}" class="btn btn-primary">
-                                    <i class="fas fa-plus me-2"></i>Log Your First Maintenance
-                                </a>
+                                <div class="py-4">
+                                    <i class="fas fa-wrench fa-3x text-muted mb-3 opacity-25"></i>
+                                    <h5 class="text-muted fw-normal">No maintenance records found</h5>
+                                    <a href="{{ route('maintenance.create') }}" class="btn btn-primary mt-3 px-4">
+                                        <i class="fas fa-plus me-2"></i>Log First Service
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     @endforelse
