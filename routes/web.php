@@ -7,6 +7,7 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\RenewalController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AiChatController;
 use Illuminate\Support\Facades\Route;
 
 // Guest routes
@@ -50,6 +51,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+
+    // AI support chatbot route
+    Route::post('/ai-chat/ask', [AiChatController::class, 'ask'])->name('ai-chat.ask');
     
     Route::get('/password/request', function () {
         return view('auth.forgot-password');
