@@ -102,7 +102,8 @@
 
         .sidebar.collapsed .sidebar-brand h3,
         .sidebar.collapsed .sidebar-brand .brand-text,
-        .sidebar.collapsed .sidebar-menu li a .label {
+        .sidebar.collapsed .sidebar-menu li a .label,
+        .sidebar.collapsed .sidebar-footer a .label {
             display: none;
         }
 
@@ -214,7 +215,8 @@
             font-size: 15px;
         }
 
-        .sidebar-menu li a .label {
+        .sidebar-menu li a .label,
+        .sidebar-footer a .label {
             display: inline-block;
             white-space: nowrap;
         }
@@ -246,6 +248,16 @@
 
         /* collapsed look */
         .sidebar.collapsed .sidebar-menu li a {
+            justify-content: center;
+            padding: 12px 0;
+            margin: 4px 6px;
+        }
+
+        .sidebar.collapsed .sidebar-footer {
+            padding: 12px 6px;
+        }
+
+        .sidebar.collapsed .sidebar-footer a {
             justify-content: center;
             padding: 12px 0;
             margin: 4px 6px;
