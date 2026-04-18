@@ -2,6 +2,42 @@
 
 @section('page-title', 'My Vehicles')
 
+@push('styles')
+<style>
+    .vehicle-image-wrap {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        min-height: 180px;
+        max-height: 260px;
+        background: #f8fafc;
+        border-radius: 15px 15px 0 0;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .vehicle-image-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+        display: block;
+    }
+
+    .vehicle-image-placeholder {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    @media (max-width: 576px) {
+        .vehicle-image-wrap {
+            aspect-ratio: 4 / 3;
+            min-height: 150px;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="row mb-4">
     <div class="col-md-6">
@@ -48,9 +84,11 @@
                 @endphp
 
                 @if(!empty($photoUrl))
-                    <img src="{{ $photoUrl }}" class="card-img-top" alt="{{ $vehicle->brand }}" style="height: 200px; object-fit: cover; border-radius: 15px 15px 0 0;">
+                    <div class="vehicle-image-wrap">
+                        <img src="{{ $photoUrl }}" class="card-img-top" alt="{{ $vehicle->brand }}">
+                    </div>
                 @else
-                    <div style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px 15px 0 0; display: flex; align-items: center; justify-content: center;">
+                    <div class="vehicle-image-wrap vehicle-image-placeholder">
                         <i class="fas fa-car fa-4x text-white"></i>
                     </div>
                 @endif
