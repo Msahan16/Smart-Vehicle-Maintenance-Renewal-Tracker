@@ -153,6 +153,39 @@
             </div>
         </div>
 
+        <!-- AI Vehicle Condition -->
+        <div class="card-custom mt-4">
+            <div class="card-header">
+                <i class="fas fa-robot me-2"></i>AI Vehicle Condition
+            </div>
+            <div class="card-body">
+                @if($aiVehicleConditions->count() > 0)
+                    <div class="list-group list-group-flush">
+                        @foreach($aiVehicleConditions as $item)
+                            <div class="list-group-item px-0">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <div>
+                                        <h6 class="mb-1">{{ $item->vehicle->brand }} {{ $item->vehicle->model }}</h6>
+                                        <small class="text-muted">{{ $item->vehicle->vehicle_number }}</small>
+                                    </div>
+                                    <span class="badge {{ $item->analysis['badge'] }}">{{ $item->analysis['label'] }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">{{ $item->analysis['summary'] }}</small>
+                                    <strong class="text-primary">{{ $item->analysis['score'] }}/100</strong>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="text-center py-3">
+                        <i class="fas fa-car fa-2x text-muted mb-2"></i>
+                        <p class="text-muted mb-0">No vehicles available for condition analysis</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+
         <!-- Quick Actions -->
         <div class="card-custom mt-4">
             <div class="card-header">
