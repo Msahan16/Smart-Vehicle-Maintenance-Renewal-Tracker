@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Http;
 
 class RenewalController extends Controller
 {
+    private const REMINDER_DAYS = [30, 7, 1];
+
     public function index()
     {
         $user = Auth::user();
@@ -83,51 +85,59 @@ class RenewalController extends Controller
         foreach ($vehicles as $vehicle) {
             if ($vehicle->license_expiry) {
                 $daysLeft = (int) Carbon::today()->diffInDays($vehicle->license_expiry, false);
-                $reminders[] = [
-                    'type' => 'Vehicle License',
-                    'vehicle' => $vehicle->brand . ' ' . $vehicle->model,
-                    'vehicle_number' => $vehicle->vehicle_number,
-                    'due_date' => Carbon::parse($vehicle->license_expiry)->format('M d, Y'),
-                    'days_left' => $daysLeft,
-                ];
+                if (in_array($daysLeft, self::REMINDER_DAYS, true)) {
+                    $reminders[] = [
+                        'type' => 'Vehicle License',
+                        'vehicle' => $vehicle->brand . ' ' . $vehicle->model,
+                        'vehicle_number' => $vehicle->vehicle_number,
+                        'due_date' => Carbon::parse($vehicle->license_expiry)->format('M d, Y'),
+                        'days_left' => $daysLeft,
+                    ];
+                }
             }
 
             if ($vehicle->insurance_expiry) {
                 $daysLeft = (int) Carbon::today()->diffInDays($vehicle->insurance_expiry, false);
-                $reminders[] = [
-                    'type' => 'Insurance',
-                    'vehicle' => $vehicle->brand . ' ' . $vehicle->model,
-                    'vehicle_number' => $vehicle->vehicle_number,
-                    'due_date' => Carbon::parse($vehicle->insurance_expiry)->format('M d, Y'),
-                    'days_left' => $daysLeft,
-                ];
+                if (in_array($daysLeft, self::REMINDER_DAYS, true)) {
+                    $reminders[] = [
+                        'type' => 'Insurance',
+                        'vehicle' => $vehicle->brand . ' ' . $vehicle->model,
+                        'vehicle_number' => $vehicle->vehicle_number,
+                        'due_date' => Carbon::parse($vehicle->insurance_expiry)->format('M d, Y'),
+                        'days_left' => $daysLeft,
+                    ];
+                }
             }
 
             if ($vehicle->emission_test_expiry) {
                 $daysLeft = (int) Carbon::today()->diffInDays($vehicle->emission_test_expiry, false);
-                $reminders[] = [
-                    'type' => 'Emission Test',
-                    'vehicle' => $vehicle->brand . ' ' . $vehicle->model,
-                    'vehicle_number' => $vehicle->vehicle_number,
-                    'due_date' => Carbon::parse($vehicle->emission_test_expiry)->format('M d, Y'),
-                    'days_left' => $daysLeft,
-                ];
+                if (in_array($daysLeft, self::REMINDER_DAYS, true)) {
+                    $reminders[] = [
+                        'type' => 'Emission Test',
+                        'vehicle' => $vehicle->brand . ' ' . $vehicle->model,
+                        'vehicle_number' => $vehicle->vehicle_number,
+                        'due_date' => Carbon::parse($vehicle->emission_test_expiry)->format('M d, Y'),
+                        'days_left' => $daysLeft,
+                    ];
+                }
             }
         }
 
         if ($user->driver_license_expiry) {
             $daysLeft = (int) Carbon::today()->diffInDays($user->driver_license_expiry, false);
-            $reminders[] = [
-                'type' => 'Driver License',
-                'vehicle' => 'N/A',
-                'vehicle_number' => $user->driver_license_number ?? 'N/A',
-                'due_date' => Carbon::parse($user->driver_license_expiry)->format('M d, Y'),
-                'days_left' => $daysLeft,
-            ];
+            if (in_array($daysLeft, self::REMINDER_DAYS, true)) {
+                $reminders[] = [
+                    'type' => 'Driver License',
+                    'vehicle' => 'N/A',
+                    'vehicle_number' => $user->driver_license_number ?? 'N/A',
+                    'due_date' => Carbon::parse($user->driver_license_expiry)->format('M d, Y'),
+                    'days_left' => $daysLeft,
+                ];
+            }
         }
 
         if (empty($reminders)) {
-            return back()->with('info', 'No renewal data found to send.');
+            return back()->with('info', 'No reminders for 30, 7, or 1 day windows today.');
         }
 
         $html = view('emails.renewal-reminder', [

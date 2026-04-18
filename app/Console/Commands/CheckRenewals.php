@@ -3,13 +3,15 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
-use App\Models\Vehicle;
 use App\Mail\RenewalReminderMail;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
 class CheckRenewals extends Command
 {
+    private const REMINDER_DAYS = [30, 7, 1];
+
     protected $signature = 'renewals:check';
     protected $description = 'Check for upcoming renewals and send email reminders';
 
@@ -25,8 +27,8 @@ class CheckRenewals extends Command
             foreach ($user->vehicles as $vehicle) {
                 // Check license expiry
                 if ($vehicle->license_expiry) {
-                    $daysLeft = now()->diffInDays($vehicle->license_expiry, false);
-                    if (in_array($daysLeft, [30, 7, 1, 0])) {
+                    $daysLeft = Carbon::today()->diffInDays($vehicle->license_expiry->copy()->startOfDay(), false);
+                    if (in_array($daysLeft, self::REMINDER_DAYS, true)) {
                         $reminders[] = [
                             'type' => 'Vehicle License',
                             'vehicle' => $vehicle->brand . ' ' . $vehicle->model,
@@ -39,8 +41,8 @@ class CheckRenewals extends Command
 
                 // Check insurance expiry
                 if ($vehicle->insurance_expiry) {
-                    $daysLeft = now()->diffInDays($vehicle->insurance_expiry, false);
-                    if (in_array($daysLeft, [30, 7, 1, 0])) {
+                    $daysLeft = Carbon::today()->diffInDays($vehicle->insurance_expiry->copy()->startOfDay(), false);
+                    if (in_array($daysLeft, self::REMINDER_DAYS, true)) {
                         $reminders[] = [
                             'type' => 'Vehicle Insurance',
                             'vehicle' => $vehicle->brand . ' ' . $vehicle->model,
@@ -53,8 +55,8 @@ class CheckRenewals extends Command
 
                 // Check emission test expiry
                 if ($vehicle->emission_test_expiry) {
-                    $daysLeft = now()->diffInDays($vehicle->emission_test_expiry, false);
-                    if (in_array($daysLeft, [30, 7, 1, 0])) {
+                    $daysLeft = Carbon::today()->diffInDays($vehicle->emission_test_expiry->copy()->startOfDay(), false);
+                    if (in_array($daysLeft, self::REMINDER_DAYS, true)) {
                         $reminders[] = [
                             'type' => 'Emission Test',
                             'vehicle' => $vehicle->brand . ' ' . $vehicle->model,
@@ -68,8 +70,8 @@ class CheckRenewals extends Command
 
             // Check driver license expiry
             if ($user->driver_license_expiry) {
-                $daysLeft = now()->diffInDays($user->driver_license_expiry, false);
-                if (in_array($daysLeft, [30, 7, 1, 0])) {
+                $daysLeft = Carbon::today()->diffInDays($user->driver_license_expiry->copy()->startOfDay(), false);
+                if (in_array($daysLeft, self::REMINDER_DAYS, true)) {
                     $reminders[] = [
                         'type' => 'Driver License',
                         'vehicle' => 'N/A',
