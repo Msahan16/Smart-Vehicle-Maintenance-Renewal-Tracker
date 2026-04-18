@@ -84,11 +84,14 @@
                                 @endif
                             </td>
                             <td>
-                                @if($renewal['days_left'] < 0)
-                                    <span class="text-danger fw-bold">{{ abs($renewal['days_left']) }} days overdue</span>
+                                @php
+                                    $daysLeft = (int) $renewal['days_left'];
+                                @endphp
+                                @if($daysLeft < 0)
+                                    <span class="text-danger fw-bold">{{ abs($daysLeft) }} {{ abs($daysLeft) === 1 ? 'day' : 'days' }} overdue</span>
                                 @else
-                                    <span class="{{ $renewal['days_left'] <= 7 ? 'text-danger fw-bold' : ($renewal['days_left'] <= 30 ? 'text-warning fw-bold' : '') }}">
-                                        {{ $renewal['days_left'] }} days
+                                    <span class="{{ $daysLeft <= 7 ? 'text-danger fw-bold' : ($daysLeft <= 30 ? 'text-warning fw-bold' : '') }}">
+                                        {{ $daysLeft }} {{ $daysLeft === 1 ? 'day' : 'days' }}
                                     </span>
                                 @endif
                             </td>

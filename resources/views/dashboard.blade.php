@@ -88,9 +88,15 @@
                                         <td>{{ $renewal->due_date->format('M d, Y') }}</td>
                                         <td>
                                             @php
-                                                $daysLeft = now()->diffInDays($renewal->due_date, false);
+                                                $daysLeft = (int) now()->startOfDay()->diffInDays($renewal->due_date->copy()->startOfDay(), false);
                                                 $badgeClass = $daysLeft < 0 ? 'overdue' : ($daysLeft <= 7 ? 'overdue' : ($daysLeft <= 30 ? 'due-soon' : 'safe'));
-                                                $statusText = $daysLeft < 0 ? 'Overdue' : ($daysLeft <= 7 ? $daysLeft . ' days left' : ($daysLeft <= 30 ? $daysLeft . ' days left' : 'Safe'));
+                                                $statusText = $daysLeft < 0
+                                                    ? 'Overdue'
+                                                    : ($daysLeft === 0
+                                                        ? 'Due today'
+                                                        : ($daysLeft <= 30
+                                                            ? $daysLeft . ' ' . ($daysLeft === 1 ? 'day' : 'days') . ' left'
+                                                            : 'Safe'));
                                             @endphp
                                             <span class="badge {{ $badgeClass }}">{{ $statusText }}</span>
                                         </td>
