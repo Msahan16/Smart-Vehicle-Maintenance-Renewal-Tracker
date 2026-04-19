@@ -27,7 +27,7 @@ class CheckRenewals extends Command
             foreach ($user->vehicles as $vehicle) {
                 // Check license expiry
                 if ($vehicle->license_expiry) {
-                    $daysLeft = Carbon::today()->diffInDays($vehicle->license_expiry->copy()->startOfDay(), false);
+                    $daysLeft = (int) Carbon::today()->diffInDays($vehicle->license_expiry->copy()->startOfDay(), false);
                     if (in_array($daysLeft, self::REMINDER_DAYS, true)) {
                         $reminders[] = [
                             'type' => 'Vehicle License',
@@ -41,7 +41,7 @@ class CheckRenewals extends Command
 
                 // Check insurance expiry
                 if ($vehicle->insurance_expiry) {
-                    $daysLeft = Carbon::today()->diffInDays($vehicle->insurance_expiry->copy()->startOfDay(), false);
+                    $daysLeft = (int) Carbon::today()->diffInDays($vehicle->insurance_expiry->copy()->startOfDay(), false);
                     if (in_array($daysLeft, self::REMINDER_DAYS, true)) {
                         $reminders[] = [
                             'type' => 'Vehicle Insurance',
@@ -55,7 +55,7 @@ class CheckRenewals extends Command
 
                 // Check emission test expiry
                 if ($vehicle->emission_test_expiry) {
-                    $daysLeft = Carbon::today()->diffInDays($vehicle->emission_test_expiry->copy()->startOfDay(), false);
+                    $daysLeft = (int) Carbon::today()->diffInDays($vehicle->emission_test_expiry->copy()->startOfDay(), false);
                     if (in_array($daysLeft, self::REMINDER_DAYS, true)) {
                         $reminders[] = [
                             'type' => 'Emission Test',
@@ -70,7 +70,7 @@ class CheckRenewals extends Command
 
             // Check driver license expiry
             if ($user->driver_license_expiry) {
-                $daysLeft = Carbon::today()->diffInDays($user->driver_license_expiry->copy()->startOfDay(), false);
+                $daysLeft = (int) Carbon::today()->diffInDays($user->driver_license_expiry->copy()->startOfDay(), false);
                 if (in_array($daysLeft, self::REMINDER_DAYS, true)) {
                     $reminders[] = [
                         'type' => 'Driver License',
