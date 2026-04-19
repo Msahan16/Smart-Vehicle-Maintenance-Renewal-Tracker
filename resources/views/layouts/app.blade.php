@@ -1205,7 +1205,9 @@
             const form = document.getElementById('aiChatForm');
             const input = document.getElementById('aiChatInput');
             const sendBtn = document.getElementById('aiChatSend');
-            const storageKey = 'vehicleSupportChatHistory';
+            const userId = {{ (int) auth()->id() }};
+            const sessionId = @json(session()->getId());
+            const storageKey = `vehicleSupportChatHistory:${userId}:${sessionId}`;
             const logoutForm = document.getElementById('logout-form');
 
             function clearChatHistory() {
@@ -1269,7 +1271,7 @@
                         };
                     });
 
-                    localStorage.setItem(storageKey, JSON.stringify(records.slice(-30)));
+                    sessionStorage.setItem(storageKey, JSON.stringify(records.slice(-30)));
                 } catch (error) {
                     // Ignore storage errors
                 }
@@ -1277,7 +1279,7 @@
 
             function loadHistory() {
                 try {
-                    const raw = localStorage.getItem(storageKey);
+                    const raw = sessionStorage.getItem(storageKey);
                     if (!raw) {
                         return false;
                     }
