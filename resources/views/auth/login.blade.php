@@ -78,11 +78,7 @@
                 <i class="fas fa-arrow-right me-2"></i> Login to Dashboard
             </button>
 
-            @if (Route::has('password.request'))
-                <a href="{{ route('password.request') }}" class="forgot-link">
-                    Forgot your password?
-                </a>
-            @endif
+           
         </form>
     </div>
 
