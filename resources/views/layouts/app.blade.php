@@ -1206,6 +1206,24 @@
             const input = document.getElementById('aiChatInput');
             const sendBtn = document.getElementById('aiChatSend');
             const storageKey = 'vehicleSupportChatHistory';
+            const logoutForm = document.getElementById('logout-form');
+
+            function clearChatHistory() {
+                try {
+                    localStorage.removeItem(storageKey);
+                    localStorage.removeItem('cchat');
+                    sessionStorage.removeItem(storageKey);
+                    sessionStorage.removeItem('cchat');
+                } catch (error) {
+                    // Ignore storage errors
+                }
+            }
+
+            if (logoutForm) {
+                logoutForm.addEventListener('submit', function() {
+                    clearChatHistory();
+                });
+            }
 
             if (!launcher || !panel || !closeBtn || !messagesEl || !typingEl || !form || !input || !sendBtn) {
                 return;
