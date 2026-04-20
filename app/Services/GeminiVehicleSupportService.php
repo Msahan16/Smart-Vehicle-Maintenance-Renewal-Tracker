@@ -6,6 +6,7 @@ use App\Models\MaintenanceRecord;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class GeminiVehicleSupportService
 {
@@ -13,6 +14,7 @@ class GeminiVehicleSupportService
     {
         $apiKey = (string) config('services.gemini.api_key');
         $model = (string) config('services.gemini.model', 'gemini-2.5-flash');
+        $fallbackModel = (string) config('services.gemini.fallback_model', 'gemini-2.5-flash-lite');
         $baseUrl = rtrim((string) config('services.gemini.base_url', 'https://generativelanguage.googleapis.com/v1beta'), '/');
         $verifySsl = (bool) config('services.gemini.verify_ssl', true);
 
@@ -45,46 +47,84 @@ TXT;
             $client = $client->withoutVerifying();
         }
 
-        $response = $client
-            ->post("{$baseUrl}/models/{$model}:generateContent?key={$apiKey}", [
-                'systemInstruction' => [
-                    'parts' => [
-                        ['text' => $systemInstruction],
-                    ],
-                ],
-                'contents' => [
-                    [
-                        'role' => 'user',
-                        'parts' => [
-                            ['text' => $userPrompt],
-                        ],
-                    ],
-                ],
-                'generationConfig' => [
-                    'temperature' => 0.4,
-                    'maxOutputTokens' => 500,
-                ],
-            ]);
+        $modelsToTry = array_values(array_unique(array_filter([$model, $fallbackModel])));
+        $lastStatus = null;
+        $lastErrorMessage = null;
 
-        if (! $response->ok()) {
+        foreach ($modelsToTry as $modelToTry) {
+            try {
+                $response = $client
+                    ->post("{$baseUrl}/models/{$modelToTry}:generateContent?key={$apiKey}", [
+                        'systemInstruction' => [
+                            'parts' => [
+                                ['text' => $systemInstruction],
+                            ],
+                        ],
+                        'contents' => [
+                            [
+                                'role' => 'user',
+                                'parts' => [
+                                    ['text' => $userPrompt],
+                                ],
+                            ],
+                        ],
+                        'generationConfig' => [
+                            'temperature' => 0.4,
+                            'maxOutputTokens' => 500,
+                        ],
+                    ]);
+            } catch (\Throwable $exception) {
+                Log::warning('Gemini vehicle support request exception', [
+                    'user_id' => $user->id,
+                    'model' => $modelToTry,
+                    'message' => $exception->getMessage(),
+                ]);
+
+                $lastStatus = 0;
+                $lastErrorMessage = $exception->getMessage();
+                continue;
+            }
+
+            if (! $response->ok()) {
+                $errorMessage = data_get($response->json(), 'error.message');
+
+                Log::warning('Gemini vehicle support request failed', [
+                    'user_id' => $user->id,
+                    'model' => $modelToTry,
+                    'status' => $response->status(),
+                    'error' => is_string($errorMessage) ? $errorMessage : null,
+                    'body' => mb_substr((string) $response->body(), 0, 500),
+                ]);
+
+                $lastStatus = $response->status();
+                $lastErrorMessage = is_string($errorMessage) ? trim($errorMessage) : null;
+                continue;
+            }
+
+            $reply = data_get($response->json(), 'candidates.0.content.parts.0.text');
+
+            if (! is_string($reply) || trim($reply) === '') {
+                $lastStatus = $response->status();
+                $lastErrorMessage = 'Empty response from AI provider.';
+                continue;
+            }
+
             return [
-                'ok' => false,
-                'reply' => 'The AI service is temporarily unavailable. Please try again in a moment.',
+                'ok' => true,
+                'reply' => trim($reply),
             ];
         }
 
-        $reply = data_get($response->json(), 'candidates.0.content.parts.0.text');
-
-        if (! is_string($reply) || trim($reply) === '') {
+        if (app()->environment('local') && is_string($lastErrorMessage) && $lastErrorMessage !== '') {
             return [
                 'ok' => false,
-                'reply' => 'I could not generate a response right now. Please rephrase your question and try again.',
+                'reply' => 'Gemini API error ('.($lastStatus ?? 0).'): '.$lastErrorMessage,
             ];
         }
 
         return [
-            'ok' => true,
-            'reply' => trim($reply),
+            'ok' => false,
+            'reply' => 'The AI service is temporarily unavailable. Please try again in a moment.',
         ];
     }
 
