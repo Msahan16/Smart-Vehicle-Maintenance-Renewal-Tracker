@@ -14,6 +14,7 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $vehicles = $user->vehicles()->with('maintenanceRecords')->get();
+        $vehicleIds = $vehicles->pluck('id');
         
         // Get total vehicles
         $totalVehicles = $vehicles->count();
@@ -74,7 +75,7 @@ class DashboardController extends Controller
         }
         
         // Get recent maintenance
-        $recentMaintenance = MaintenanceRecord::whereIn('vehicle_id', $vehicles->pluck('id'))
+        $recentMaintenance = MaintenanceRecord::whereIn('vehicle_id', $vehicleIds)
             ->with('vehicle')
             ->orderBy('service_date', 'desc')
             ->limit(5)

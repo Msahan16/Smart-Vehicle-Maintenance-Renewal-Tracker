@@ -972,6 +972,12 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('expenses.index') }}" class="{{ request()->routeIs('expenses.*') ? 'active' : '' }}">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="label">Expense Analytics</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">
                     <i class="fas fa-user-circle"></i>
                     <span class="label">Profile & Settings</span>

@@ -8,6 +8,7 @@ use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\RenewalController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AiChatController;
+use App\Http\Controllers\ExpenseAnalyticsController;
 use Illuminate\Support\Facades\Route;
 
 // Guest routes
@@ -46,6 +47,9 @@ Route::middleware('auth')->group(function () {
     // Renewals routes
     Route::get('/renewals', [RenewalController::class, 'index'])->name('renewals.index');
     Route::post('/renewals/send-email', [RenewalController::class, 'sendEmail'])->name('renewals.send-email');
+
+    // Expense analytics route
+    Route::get('/expenses', [ExpenseAnalyticsController::class, 'index'])->name('expenses.index');
     
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
