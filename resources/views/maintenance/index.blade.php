@@ -3,6 +3,9 @@
 @section('page-title', 'Maintenance Records')
 
 @section('content')
+@php
+    $currencySymbol = config('app.currency_symbol');
+@endphp
 <div class="row mb-4">
     <div class="col-md-6">
         <h2>Maintenance Records</h2>
@@ -60,7 +63,7 @@
                             </td>
                             <td>
                                 @if($record->cost)
-                                    <span class="fw-bold text-dark">${{ number_format($record->cost, 2) }}</span>
+                                    <span class="fw-bold text-dark">{{ $currencySymbol }}{{ number_format($record->cost, 2) }}</span>
                                 @else
                                     <span class="text-muted">—</span>
                                 @endif
@@ -183,7 +186,7 @@
                                 </tr>
                                 <tr>
                                     <th>Cost:</th>
-                                    <td><strong>{{ $record->cost ? '$' . number_format($record->cost, 2) : 'N/A' }}</strong></td>
+                                    <td><strong>{{ $record->cost ? $currencySymbol . number_format($record->cost, 2) : 'N/A' }}</strong></td>
                                 </tr>
                                 <tr>
                                     <th>Service Center:</th>

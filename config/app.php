@@ -20,4 +20,6 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+    'currency_symbol' => env('APP_CURRENCY_SYMBOL', 'Rs.'),
 ];

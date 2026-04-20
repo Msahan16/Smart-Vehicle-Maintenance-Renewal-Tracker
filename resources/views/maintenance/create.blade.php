@@ -3,6 +3,9 @@
 @section('page-title', 'Log Maintenance')
 
 @section('content')
+@php
+    $currencySymbol = config('app.currency_symbol');
+@endphp
 <div class="row">
     <div class="col-lg-8 offset-lg-2">
         <div class="card-custom">
@@ -86,7 +89,7 @@
                             <div class="col-md-6 mb-3">
                                 <label for="cost" class="form-label">Cost</label>
                                 <div class="input-group">
-                                    <span class="input-group-text">$</span>
+                                    <span class="input-group-text">{{ $currencySymbol }}</span>
                                     <input type="number" name="cost" id="cost" class="form-control @error('cost') is-invalid @enderror" value="{{ old('cost') }}" step="0.01" min="0">
                                 </div>
                                 @error('cost')

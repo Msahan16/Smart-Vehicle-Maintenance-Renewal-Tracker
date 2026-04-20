@@ -55,7 +55,7 @@ class ExpenseAnalyticsController extends Controller
             ->limit(5)
             ->get();
 
-        $currencySymbol = (string) config('app.currency_symbol', '$');
+        $currencySymbol = (string) config('app.currency_symbol');
 
         return view('expenses.index', compact(
             'currencySymbol',
